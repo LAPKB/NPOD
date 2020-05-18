@@ -1,6 +1,6 @@
-prune <- function(theta, theta_plus, theta_d){
-    a = c(1,0.1)
-    b = c(4, 1)
+prune <- function(theta, theta_plus, theta_d, a, b){
+    #a = c(1,0.1)
+    #b = c(4, 1)
 
     #R parameters are passed by value, not need to copy
 
