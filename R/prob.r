@@ -7,6 +7,6 @@ prob <- function (y, t, theta, sigma){
        m <- mu(theta, t[i])
        z[i] <- (y[j]-m)^2
     }
-  prob = (1/(sqrt(2*pi)*sigma))^(j)*exp(-(1/(2*(sigma)^(2)))*sum(z))  
+  prob <- (1/(sqrt(2*pi)*sigma))^(j)*exp(-(1/(2*(sigma)^(2)))*sum(z))  
   return(prob)
 }
