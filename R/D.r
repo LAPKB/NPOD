@@ -1,3 +1,5 @@
+source("prob.r")
+
 D<-function(theta_parameter, y, t, sigma, PYL){
     N <- length(y[,1])
     D_components = -N

@@ -1,3 +1,5 @@
+source("prob.r")
+
 PSI_2 <- function(y, t, theta, sigma){
     N <- length(y[,1])
     K <- length(theta[1,])
