@@ -4,7 +4,7 @@ PSI_2 <- function(y, t, theta, sigma){
     psi <- matrix(0,N,K)
 
     for (i in 1..N) {
-       for (l in 1..k) {
+       for (l in 1..K) {
           psi[i,l] <- prob(y[i,], t, theta[, l], sigma)
        }
     }
