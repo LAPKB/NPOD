@@ -46,12 +46,12 @@ for (i in 1:number_of_individuals){
 }
 
 ### Set scaling factors, which must be strictly positive
-x_scaling_factor <- 2+0.5*rnorm(number_of_individuals)
-y_scaling_factor <- 0.5+0.15*rnorm(number_of_individuals)
+x_scaling_factor <- 2+0.5*rnorm(number_of_individuals) # range [0,5]
+y_scaling_factor <- 0.5+0.15*rnorm(number_of_individuals) # range [0,5]
 # Set up the vector as required
 scaling_factors <- matrix(c(x_scaling_factor, y_scaling_factor),nrow = 2,ncol = number_of_individuals)
 
-y1<-mix_norm(number_of_individuals,c(1,2),c(0.05,0.05),0.8)
+y1<-mix_norm(number_of_individuals,c(1,2),c(0.05,0.05),0.8) # range [0,5]
 y2<-mix_norm(number_of_individuals,c(0.7,1),c(0.05,0.05),0.5)
 y3<-mix_norm(number_of_individuals,c(0.5,1),c(0.05,0.05),0.2)
 
