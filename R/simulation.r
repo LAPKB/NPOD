@@ -1,6 +1,8 @@
 # Load necessary libraries and functions
 library(ospsuite)   # PK-Sim R toolbox
 library(readr)  
+
+setwd("R")
 source("mix_norm.r")
 source("apply_and_simulate.R")
 
