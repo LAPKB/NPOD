@@ -92,3 +92,48 @@ for (i in 1:number_of_individuals){
   resultsValues[[i]] <- resultsData$data$`Organism|PeripheralVenousBlood|Bupropion human 1st order|Plasma (Peripheral Venous Blood)`
   
 }
+
+#Plotting the results
+df<-data.frame(resultsTime,resultsValues)
+c<-colors()
+g <- ggplot(df, aes(resultsTime[[1]]))
+g<-g+geom_line(aes(y=resultsValues[[1]]),color=c[51])
+g<-g+geom_line(aes(y=resultsValues[[2]]),color=c[52])
+g<-g+geom_line(aes(y=resultsValues[[3]]),color=c[53])
+g<-g+geom_line(aes(y=resultsValues[[4]]),color=c[54])
+g<-g+geom_line(aes(y=resultsValues[[5]]),color=c[55])
+g<-g+geom_line(aes(y=resultsValues[[6]]),color=c[66])
+g<-g+geom_line(aes(y=resultsValues[[7]]),color=c[67])
+g<-g+geom_line(aes(y=resultsValues[[8]]),color=c[68])
+g<-g+geom_line(aes(y=resultsValues[[9]]),color=c[69])
+g<-g+geom_line(aes(y=resultsValues[[10]]),color=c[10])
+
+g<-g+geom_line(aes(y=resultsValues[[11]]),color=c[11])
+g<-g+geom_line(aes(y=resultsValues[[12]]),color=c[12])
+g<-g+geom_line(aes(y=resultsValues[[13]]),color=c[13])
+g<-g+geom_line(aes(y=resultsValues[[14]]),color=c[14])
+g<-g+geom_line(aes(y=resultsValues[[15]]),color=c[15])
+g<-g+geom_line(aes(y=resultsValues[[16]]),color=c[16])
+g<-g+geom_line(aes(y=resultsValues[[17]]),color=c[17])
+g<-g+geom_line(aes(y=resultsValues[[18]]),color=c[18])
+g<-g+geom_line(aes(y=resultsValues[[19]]),color=c[19])
+g<-g+geom_line(aes(y=resultsValues[[20]]),color=c[20])
+
+g<-g+geom_line(aes(y=resultsValues[[21]]),color=c[21])
+g<-g+geom_line(aes(y=resultsValues[[22]]),color=c[22])
+g<-g+geom_line(aes(y=resultsValues[[23]]),color=c[23])
+g<-g+geom_line(aes(y=resultsValues[[24]]),color=c[24])
+g<-g+geom_line(aes(y=resultsValues[[25]]),color=c[25])
+g<-g+geom_line(aes(y=resultsValues[[26]]),color=c[26])
+g<-g+geom_line(aes(y=resultsValues[[27]]),color=c[27])
+g<-g+geom_line(aes(y=resultsValues[[28]]),color=c[28])
+g<-g+geom_line(aes(y=resultsValues[[29]]),color=c[29])
+g<-g+geom_line(aes(y=resultsValues[[30]]),color=c[30])
+
+g<-g+geom_line(aes(y=resultsValues[[31]]),color=c[31])
+g<-g+geom_line(aes(y=resultsValues[[32]]),color=c[32])
+g<-g+geom_line(aes(y=resultsValues[[33]]),color=c[33])
+
+g<-g + ylab("Concentration") + xlab("Time")
+g
+
