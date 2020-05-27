@@ -48,14 +48,14 @@ for (i in 1:number_of_individuals){
 }
 
 ### Set scaling factors, which must be strictly positive
-x_scaling_factor <- 2+0.5*rnorm(number_of_individuals) # range [0,5]
-y_scaling_factor <- 0.5+0.15*rnorm(number_of_individuals) # range [0,5]
+x_scaling_factor <- 1+0.1*rnorm(number_of_individuals) # range (0.5,2)
+y_scaling_factor <- 1+0.1*rnorm(number_of_individuals) # range (0.5,2)
 # Set up the vector as required
 scaling_factors <- matrix(c(x_scaling_factor, y_scaling_factor),nrow = 2,ncol = number_of_individuals)
 
-y1<-mix_norm(number_of_individuals,c(1,2),c(0.05,0.05),0.8) # range [0,5]
-y2<-mix_norm(number_of_individuals,c(0.7,1),c(0.05,0.05),0.5)
-y3<-mix_norm(number_of_individuals,c(0.5,1),c(0.05,0.05),0.2)
+y1<-mix_norm(number_of_individuals,c(1,2),c(0.05,0.05),0.8) # range (0.5,2)
+y2<-mix_norm(number_of_individuals,c(0.7,1),c(0.05,0.05),0.5)# range (0.5,2)
+y3<-mix_norm(number_of_individuals,c(0.5,50),c(0.05,0.05),0.2)# range (0,100)
 
 ### Read in the physiological parameter changes
 # Note that the csv should have the headers [Path,Value,Base_unit]
@@ -85,7 +85,8 @@ for (i in 1:number_of_individuals){
                                           individual_chars = individuals[[i]],
                                           scaling_factors = scaling_factors[,i],
                                           dissolution_data_path = "Applications|PO 150 mg - human|SR PO 150 mg - FDA table|Fraction (dose)",
-                                          par_values = par_values[[i]])
+                                          par_values = par_values[[i]]
+                                          )
   resultsPath <- simulationResults$allQuantityPaths[[1]]
   resultsData <- getOutputValues(simulationResults, quantitiesOrPaths = resultsPath)
   resultsTime[[i]] <- resultsData$data$Time

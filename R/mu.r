@@ -11,10 +11,12 @@ mu<-function(theta, i){
     ### Read in the physiological parameter changes
     # Note that the csv should have the headers [Path,Value,Base_unit]
     # Also note that these physiological parameter changes override any physiological parameters defined in creating the individual
-    default_par_values <- read_csv("PKSim_pars_defaults.csv")
+   # default_par_values <- read_csv("PKSim_pars_defaults.csv")
     # I copy it over so that I still have the default parameter values available
-    par_values <- default_par_values
-    
+   # par_values <- default_par_values
+    par_values$Path[1] <- 'Organism|Plasma protein scale factor'           #path to the parameters probably can be made as input
+    par_values$Path[2] <- 'Organism|Skin|Peripheral blood flow fraction'   
+    par_values$Path[3] <- 'Liver and Intestinal CL|Reference concentration'
     
     # modify the parameter values as follows, NOTE: Values are in base units
     par_values$Value[1] <- theta[3]
