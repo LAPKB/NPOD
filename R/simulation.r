@@ -1,6 +1,7 @@
 # Load necessary libraries and functions
 library(ospsuite)   # PK-Sim R toolbox
 library(readr)  
+library(ggplot2)
 
 setwd("R")
 source("mix_norm.r")
