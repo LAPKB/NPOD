@@ -6,9 +6,13 @@ setwd("R")
 source("mix_norm.r")
 source("apply_and_simulate.R")
 
+
+
 # createIndividualCharacteristics() and createIndividual() require at least PK-Sim v9.0.119
 # so we need to use the portable version of PK-Sim
 # Download the portable version and initialize the path to the folder here
+
+#this statement not needed on LAPKB machine
 initPKSim("C:/Users/alona.kryshchenko/Dropbox (CSUCI)/For Alan/SummerGrant/Bupropion with R-Toolbox/PK-Sim 9.0.144")
 
 
