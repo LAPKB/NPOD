@@ -1,0 +1,104 @@
+
+#Windows
+dyn.load("R/ipm.dll")
+
+#Linux/MAC
+#dyn.load("ipm.so")
+
+emint <- function(psi, ldpsi, theta, ldtheta, npoint, nsub, ijob, x, dx, y, dy, fobj, gap, nvar, keep, ihess, isupres) {
+  if (!is.double(psi)) { storage.mode(psi) <- 'double' }
+  if (!is.integer(ldpsi)) { storage.mode(ldpsi) <- 'integer' }
+  if (!is.double(theta)) { storage.mode(theta) <- 'double' }
+  if (!is.integer(ldtheta)) { storage.mode(ldtheta) <- 'integer' }
+  if (!is.integer(npoint)) { storage.mode(npoint) <- 'integer' }
+  if (!is.integer(nsub)) { storage.mode(nsub) <- 'integer' }
+  if (!is.integer(ijob)) { storage.mode(ijob) <- 'integer' }
+  if (!is.double(x)) { storage.mode(x) <- 'double' }
+  if (!is.double(dx)) { storage.mode(dx) <- 'double' }
+  if (!is.double(y)) { storage.mode(y) <- 'double' }
+  if (!is.double(dy)) { storage.mode(dy) <- 'double' }
+  if (!is.double(fobj)) { storage.mode(fobj) <- 'double' }
+  if (!is.double(gap)) { storage.mode(gap) <- 'double' }
+  if (!is.integer(nvar)) { storage.mode(nvar) <- 'integer' }
+  if (!is.integer(keep)) { storage.mode(keep) <- 'integer' }
+  if (!is.integer(ihess)) { storage.mode(ihess) <- 'integer' }
+  if (!is.integer(isupres)) { storage.mode(isupres) <- 'integer' }
+
+  #   if (length(x) != length(w)) { stop("Both vectors should have the same size") }
+  .Call("c_emint", psi, ldpsi, theta, ldtheta, npoint, nsub, ijob, x, dx, y, dy, fobj, gap, nvar, keep, ihess, isupres)
+  return(list("lambda" = x, "fobj" = fobj))
+}
+
+burke <- function(PSI) {
+  pyjgx <- matrix(c(0 * seq(1, 10240)), nrow = 10, ncol = 1024)
+  pyjgx[1:10, 1:10] <- as.matrix(PSI) #psi
+  nvar = 5
+  ldpsi <- 10 #nmaxsub
+  theta <- matrix(c(seq(1, 60, 1)), nrow = 10, ncol = nvar + 1) #corden
+  ldtheta <- 1024 #nmaxgrd
+  npoint <- 10 #nactive
+  nsub <- 10
+  ijob <- 0
+  x <- c(seq(1, 10, 1))
+  dx <- rep(0, 10)
+  y <- rep(0, 10)
+  dy <- rep(0, 10)
+  fobj <- 10 ^ -8
+  gap <- 10 ^ -10
+  nvar <- 5
+  keep <- 10
+  ihess <- 0
+  isupres <- 1
+  emint(pyjgx, ldpsi, theta, ldtheta, npoint, nsub, ijob, x, dx, y, dy, fobj, gap, nvar, keep, ihess, isupres)
+}
+
+
+
+.test_burke <- function() {
+  library(readxl)
+  PSI <- read_excel('R/PSI.xlsx',
+                  col_names = FALSE)
+  ans <- burke(PSI)
+  print(ans)
+}
+
+
+
+
+# true_l <- c(1.172458913793544e-13, 1.172458913793544e-13, 0.199999999999883
+#             , 0.299999999999765, 1.172937884144416e-13, 0.100000000000000
+#             , 0.299973334863959, 0.100026665135807, 1.172479847547782e-13
+#             , 1.172458913793544e-13)
+# sum(true_l)
+
+## EXAMPLE DATA
+
+# # to.read = file("/Users/julianotalvaro/Dev/LAPK/R-dev/Pmetrics/src/test/ipmtest01.dat", "rb")
+# to.read = file("ipmtest01.dat", "rb")
+# readBin(to.read, integer(), n = 1, endian = "little", size = 4)
+# nrow = readBin(to.read, integer(), n = 1, endian = "little")
+# ncol = readBin(to.read, integer(), n = 1, endian = "little")
+# pyjgx = readBin(to.read, double(), endian = "little", n = 82 * 2129, size = 8) %>%
+#       matrix(nrow = 82, ncol = 2129)
+# nmaxsub = readBin(to.read, integer(), n = 1, endian = "little")
+# corden = readBin(to.read, double(), endian = "little", n = 2129 * 3) %>%
+#   matrix(nrow = 2129, ncol = 3)
+# nmaxgrd = readBin(to.read, integer(), n = 1, endian = "little")
+# nactive = readBin(to.read, integer(), n = 1, endian = "little")
+# nsub = readBin(to.read, integer(), n = 1, endian = "little")
+# ijob = readBin(to.read, integer(), n = 1, endian = "little")
+# wtf = readBin(to.read, double(), endian = "little", n = 2129, size = 8)
+# denstor = readBin(to.read, double(), endian = "little", n = 2129 * 4) %>%
+#   matrix(nrow = 2129, ncol = 4)
+# fobj = -2.0
+# readBin(to.read, double(), n = 1, endian = "little")
+# gap = readBin(to.read, double(), n = 1, endian = "little")
+# nvar = readBin(to.read, integer(), n = 1, endian = "little")
+# corden[, nvar + 1] <- wtf
+# keep = readBin(to.read, integer(), n = 1, endian = "little")
+# ihess = readBin(to.read, integer(), n = 1, endian = "little")
+# #errfill = readBin(to.read, character(), n=20, endian = "little")
+# isupress = 0 #readBin(to.read, integer(), n=1, endian = "little")
+
+# setwd("~/src/pmetrics/src")
+
