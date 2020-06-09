@@ -20,7 +20,7 @@ while (abs(F1-F0) > theta_F)
   % w_prime calculation----------------------------------------------------------------------------------
   
     P = PSI_2(y,t,old_theta,sigma); 
-    [~,lam]=burke(P);
+    [test,lam]=burke(P);
   
     ind = (lam>0.00000001) & (lam > (max(lam)/1000));    
     inb_theta = old_theta(:,ind);
@@ -43,6 +43,7 @@ while (abs(F1-F0) > theta_F)
        
            K = length(new_theta(1,:));
            pyl = P*(new_w)';
+           nc_theta = new_theta;
            parfor l = 1:K 
 %                l
                Dtheta = @(theta)D(theta, y,t, sigma, pyl);
