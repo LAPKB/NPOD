@@ -1,11 +1,13 @@
 
-#Windows
-dyn.load("R/ipm.dll")
 
-#Linux/MAC
-#dyn.load("ipm.so")
+ipm <- function(psi, ldpsi, theta, ldtheta, npoint, nsub, ijob, x, dx, y, dy, fobj, gap, nvar, keep, ihess, isupres) {
 
-emint <- function(psi, ldpsi, theta, ldtheta, npoint, nsub, ijob, x, dx, y, dy, fobj, gap, nvar, keep, ihess, isupres) {
+  #Windows
+  #load fortran ipm library
+  dyn.load("R/ipm.dll")
+
+  #Linux/MAC
+  #dyn.load("ipm.so")
   if (!is.double(psi)) { storage.mode(psi) <- 'double' }
   if (!is.integer(ldpsi)) { storage.mode(ldpsi) <- 'integer' }
   if (!is.double(theta)) { storage.mode(theta) <- 'double' }
@@ -49,12 +51,13 @@ burke <- function(PSI) {
   keep <- 10
   ihess <- 0
   isupres <- 1
-  emint(pyjgx, ldpsi, theta, ldtheta, npoint, nsub, ijob, x, dx, y, dy, fobj, gap, nvar, keep, ihess, isupres)
+  ipm(pyjgx, ldpsi, theta, ldtheta, npoint, nsub, ijob, x, dx, y, dy, fobj, gap, nvar, keep, ihess, isupres)
 }
 
 
 
 .test_burke <- function() {
+  #Real data taken from the matlab example
   library(readxl)
   PSI <- read_excel('R/PSI.xlsx',
                   col_names = FALSE)
