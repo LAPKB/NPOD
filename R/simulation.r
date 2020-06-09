@@ -18,7 +18,13 @@ source("apply_and_simulate.R")
 #this statement not needed on LAPKB machine
 initPKSim("C:/Users/alona.kryshchenko/Dropbox (CSUCI)/For Alan/SummerGrant/Bupropion with R-Toolbox/PK-Sim 9.0.144")
 
-
+#function to simulate only at specific times
+set_Sim_Times <- function(simulation,times){
+  clearOutputIntervals(simulation) #first clear default
+  for(i in times){ #now add new "intervals" for each sample time
+    addOutputInterval(simulation = simulation, startTime = i, endTime = i+1, resolution = 1)
+  }
+}
 
 ### Load the individuals into a list of objects holding their individual characteristics
 population_data <- read_csv("bupropion baseline demographics - to share - converted to metric units.csv")
@@ -85,12 +91,13 @@ simFilePath <- file.path(getwd(), paste0("PO SR 150 mg bupropion to human - Conn
 sim <- loadSimulation(simFilePath)
 
 #set the interval for simulation at 1 point per hour (units for arugments below are minutes)
-setOutputInterval(sim,startTime = 0, endTime = 24 *60, resolution = 1/60)
+# setOutputInterval(sim,startTime = 0, endTime = 24 *60, resolution = 1/60)
 
 resultsTime<-vector(mode = "list", length = number_of_individuals)
 resultsValues<-vector(mode = "list", length = number_of_individuals)
 
 for (i in 1:number_of_individuals){
+  set_Sim_Times(sim,sort(sample.int(1440,5))) #set 5 random sample times between 0 and 1440 minutes
   simulationResults <- apply_and_simulate(simulation = sim, 
                                           individual_chars = individuals[[i]],
                                           scaling_factors = scaling_factors[,i],
