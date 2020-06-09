@@ -278,6 +278,10 @@ tend    =  0;             %used to find out where the computational
                           %more efficient where it is slow. %&%
 
 iter=iter+1;
+disp(iter);
+disp(eps/min([mu, sum(R), gap]));
+
+
 
 %%Rescale mu for the Newton step.
 
@@ -399,6 +403,7 @@ muiter=[muiter mu]; %&%
 normNiter=[normNiter normR]; %&%
 % fprintf('%2d   %2.2e %2.2e %2.2e %2.2e %2.2e %2.2e %2.2e %2.2e %2.2e\n',...
 %         iter,sig,mu,normR,gap,derr,rcondH,alfpri,alfdual,tonloop);
+fprintf('%2d   %2.2e %2.2e %2.2e %2.2e\n',iter,eps,mu,normR,gap);
 end;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

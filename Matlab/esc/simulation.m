@@ -13,7 +13,7 @@ t = [ 10, 40, 80, 120, 240, 480, 1100];
 %% Initialization
 % name of xml file
 %appPath=[fileparts(which('example_timecourses_upon_parameter_variation.m')) filesep];
-xml='C:\Users\alona.kryshchenko\Dropbox (CSUCI)\For Alan\SummerGrant\ESC\IV 10mg.xml';
+xml='IV 10mg.xml';
 
 % Create the structure for the variable parameters
 initStruct=[];
