@@ -2,6 +2,8 @@
 library(ospsuite)   # PK-Sim R toolbox
 library(readr)  
 library(ggplot2)
+library(tibble)
+library(tidyr)
 
 setwd("R")
 source("mix_norm.r")
@@ -16,7 +18,13 @@ source("apply_and_simulate.R")
 #this statement not needed on LAPKB machine
 initPKSim("C:/Users/alona.kryshchenko/Dropbox (CSUCI)/For Alan/SummerGrant/Bupropion with R-Toolbox/PK-Sim 9.0.144")
 
-
+#function to simulate only at specific times
+set_Sim_Times <- function(simulation,times){
+  clearOutputIntervals(simulation) #first clear default
+  for(i in times){ #now add new "intervals" for each sample time
+    addOutputInterval(simulation = simulation, startTime = i, endTime = i+1, resolution = 1)
+  }
+}
 
 ### Load the individuals into a list of objects holding their individual characteristics
 population_data <- read_csv("bupropion baseline demographics - to share - converted to metric units.csv")
@@ -79,13 +87,17 @@ par_values[[i]]$Value[3] <- y3[i]
 }
 
 # Start a fresh simulation
-simFilePath <- file.path(getwd(), paste0("PO SR 150 mg bupropion to human - Connarn et al 2017 - table.pkml"), fsep=.Platform$file.sep)
+simFilePath <- file.path(getwd(), paste0("PO SR 150 mg bupropion to human - Connarn et al 2017 - table - June 2.pkml"), fsep=.Platform$file.sep)
 sim <- loadSimulation(simFilePath)
+
+#set the interval for simulation at 1 point per hour (units for arugments below are minutes)
+# setOutputInterval(sim,startTime = 0, endTime = 24 *60, resolution = 1/60)
 
 resultsTime<-vector(mode = "list", length = number_of_individuals)
 resultsValues<-vector(mode = "list", length = number_of_individuals)
 
 for (i in 1:number_of_individuals){
+  set_Sim_Times(sim,sort(sample.int(1440,5))) #set 5 random sample times between 0 and 1440 minutes
   simulationResults <- apply_and_simulate(simulation = sim, 
                                           individual_chars = individuals[[i]],
                                           scaling_factors = scaling_factors[,i],
@@ -100,46 +112,14 @@ for (i in 1:number_of_individuals){
 }
 
 #Plotting the results
-df<-data.frame(resultsTime,resultsValues)
-c<-colors()
-g <- ggplot(df, aes(resultsTime[[1]]))
-g<-g+geom_line(aes(y=resultsValues[[1]]),color=c[51])
-g<-g+geom_line(aes(y=resultsValues[[2]]),color=c[52])
-g<-g+geom_line(aes(y=resultsValues[[3]]),color=c[53])
-g<-g+geom_line(aes(y=resultsValues[[4]]),color=c[54])
-g<-g+geom_line(aes(y=resultsValues[[5]]),color=c[55])
-g<-g+geom_line(aes(y=resultsValues[[6]]),color=c[66])
-g<-g+geom_line(aes(y=resultsValues[[7]]),color=c[67])
-g<-g+geom_line(aes(y=resultsValues[[8]]),color=c[68])
-g<-g+geom_line(aes(y=resultsValues[[9]]),color=c[69])
-g<-g+geom_line(aes(y=resultsValues[[10]]),color=c[10])
+names(resultsTime) <- 1:number_of_individuals
+df <- tibble(time=resultsTime) %>% unnest(.id="id",cols=c(time))
+df <- cbind(df,conc=unlist(resultsValues))
+df$time <- df$time/60
 
-g<-g+geom_line(aes(y=resultsValues[[11]]),color=c[11])
-g<-g+geom_line(aes(y=resultsValues[[12]]),color=c[12])
-g<-g+geom_line(aes(y=resultsValues[[13]]),color=c[13])
-g<-g+geom_line(aes(y=resultsValues[[14]]),color=c[14])
-g<-g+geom_line(aes(y=resultsValues[[15]]),color=c[15])
-g<-g+geom_line(aes(y=resultsValues[[16]]),color=c[16])
-g<-g+geom_line(aes(y=resultsValues[[17]]),color=c[17])
-g<-g+geom_line(aes(y=resultsValues[[18]]),color=c[18])
-g<-g+geom_line(aes(y=resultsValues[[19]]),color=c[19])
-g<-g+geom_line(aes(y=resultsValues[[20]]),color=c[20])
-
-g<-g+geom_line(aes(y=resultsValues[[21]]),color=c[21])
-g<-g+geom_line(aes(y=resultsValues[[22]]),color=c[22])
-g<-g+geom_line(aes(y=resultsValues[[23]]),color=c[23])
-g<-g+geom_line(aes(y=resultsValues[[24]]),color=c[24])
-g<-g+geom_line(aes(y=resultsValues[[25]]),color=c[25])
-g<-g+geom_line(aes(y=resultsValues[[26]]),color=c[26])
-g<-g+geom_line(aes(y=resultsValues[[27]]),color=c[27])
-g<-g+geom_line(aes(y=resultsValues[[28]]),color=c[28])
-g<-g+geom_line(aes(y=resultsValues[[29]]),color=c[29])
-g<-g+geom_line(aes(y=resultsValues[[30]]),color=c[30])
-
-g<-g+geom_line(aes(y=resultsValues[[31]]),color=c[31])
-g<-g+geom_line(aes(y=resultsValues[[32]]),color=c[32])
-g<-g+geom_line(aes(y=resultsValues[[33]]),color=c[33])
-
-g<-g + ylab("Concentration") + xlab("Time")
+g <- ggplot(df,aes(x=time,y=conc,color=id)) + 
+  geom_line() + 
+  theme(legend.position = "none") +
+  ylab("Concentration") + xlab("Time (h)")
 g
 
