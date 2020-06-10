@@ -118,7 +118,7 @@ df <- cbind(df,conc=unlist(resultsValues))
 df$time <- df$time/60
 
 g <- ggplot(df,aes(x=time,y=conc,color=id)) + 
-  geom_line() + 
+  geom_point() + geom_line() +
   theme(legend.position = "none") +
   ylab("Concentration") + xlab("Time (h)")
 g
