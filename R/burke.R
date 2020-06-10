@@ -32,33 +32,33 @@ ipm <- function(psi, ldpsi, theta, ldtheta, npoint, nsub, ijob, x, dx, y, dy, fo
 }
 
 burke <- function(PSI) {
-# PSI = pr( observation | support point )
+  # PSI = pr( observation | support point )
   nsub <- dim(PSI)[1]
   npoint <- dim(PSI)[2]
 
-# theta has one support point and it's probability on
-# each row; theta is used only if ijob == 1
+  # theta has one support point and it's probability on
+  # each row; theta is used only if ijob == 1
   ldtheta <- 10 # dim(theta)[1]
   nvar <- 5 # dim(theta)[2] - 1
-  theta <- matrix(c(seq(1,60 , 1)), nrow = 10, ncol = nvar + 1) #corden
+  theta <- matrix(c(seq(1, 60, 1)), nrow = 10, ncol = nvar + 1) #corden
 
-# working arrays -- must be npoint long
+  # working arrays -- must be npoint long
   ldpsi = nsub #is passed to low level linear algebra routines
-  x <- c(rep(1/npoint,npoint)) # These are the returned probabilities !!!
-  dx <- c(rep(0,npoint))
-  y <- c(rep(0,npoint))
-  dy <- c(rep(0,npoint))
+  x <- c(rep(1 / npoint, npoint)) # These are the returned probabilities !!!
+  dx <- c(rep(0, npoint))
+  y <- c(rep(0, npoint))
+  dy <- c(rep(0, npoint))
 
-# will be reset inside of ipm; initial values here are meaningless:
+  # will be reset inside of ipm; initial values here are meaningless:
   fobj <- 10 ^ -8
   gap <- 10 ^ -10 # will be reset inside of ipm
   keep <- 0 # will be set > 0 inside of ipm
 
-# flags that control text output or program control
+  # flags that control text output or program control
   ihess <- 0 # flags Hessian error
   isupres <- 1 # 0 to not suppress error writes, 1 to supress error writes
   ijob <- 0 # do not condense
-  ipm(psi, ldpsi, theta, ldtheta, npoint, nsub, ijob, x, dx, y, dy, fobj, gap, nvar, keep, ihess, isupres)
+  ipm(PSI, ldpsi, theta, ldtheta, npoint, nsub, ijob, x, dx, y, dy, fobj, gap, nvar, keep, ihess, isupres)
 }
 
 
@@ -67,7 +67,7 @@ burke <- function(PSI) {
   library(readxl)
   PSI <- read_excel('R/PSI.xlsx',
                   col_names = FALSE)
-  ans <- burke(PSI)
+  ans <- burke(as.matrix(PSI))
   print(ans)
 }
 
