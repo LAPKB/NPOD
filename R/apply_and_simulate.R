@@ -26,25 +26,25 @@ apply_and_simulate <- function(simulation,
         setParameterValuesByPath(individual$distributedParameters$paths, 
                                  individual$distributedParameters$values,
                                  simulation = simulation)
-        # test that it worked
-        number_of_distributed_parameters <- length(individual$distributedParameters$paths)
-        for (i in 1:number_of_distributed_parameters) {
-            test_parameter <- getParameter(individual$distributedParameters$paths[i], simulation)
-            value_after <- as.numeric(test_parameter$value)
-            if (individual$distributedParameters$values[i]!=value_after){
-                print(i)
-                print("Unsuccessful in setting parameter.")
-                return(NULL)
-            }
-        }
+        # # test that it worked
+        # number_of_distributed_parameters <- length(individual$distributedParameters$paths)
+        # for (i in 1:number_of_distributed_parameters) {
+        #     test_parameter <- getParameter(individual$distributedParameters$paths[i], simulation)
+        #     value_after <- as.numeric(test_parameter$value)
+        #     if (individual$distributedParameters$values[i]!=value_after){
+        #         print(i)
+        #         print("Unsuccessful in setting parameter.")
+        #         return(NULL)
+        #     }
+        # }
     }
     
     
     ## Apply scaling factors to dissolution profile
     if (all(scaling_factors>0) && (!identical(scaling_factors, c(1,1)))) {
         dissolution_data_parameter <- getParameter(dissolution_data_path, simulation)
-        dissolution_data_formula <- dissolution_data_parameter$formula
-        dissolution_data_all_points <- dissolution_data_formula$allPoints
+        # dissolution_data_formula <- dissolution_data_parameter$formula
+        dissolution_data_all_points <- dissolution_data_parameter$formula$allPoints
         
         numPoints <- length(dissolution_data_all_points)
         
