@@ -43,8 +43,8 @@ apply_and_simulate <- function(simulation,
     ## Apply scaling factors to dissolution profile
     if (all(scaling_factors>0) && (!identical(scaling_factors, c(1,1)))) {
         dissolution_data_parameter <- getParameter(dissolution_data_path, simulation)
-        # dissolution_data_formula <- dissolution_data_parameter$formula
-        dissolution_data_all_points <- dissolution_data_parameter$formula$allPoints
+        dissolution_data_formula <- dissolution_data_parameter$formula
+        dissolution_data_all_points <- dissolution_data_formula$allPoints
         
         numPoints <- length(dissolution_data_all_points)
         
