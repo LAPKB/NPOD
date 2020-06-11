@@ -1,7 +1,11 @@
+setwd("R")
 source("initial_data.r")
 source("Dopt.R")
 source("PSI_2.r")
 source("D.r")
+source("burke.R")
+source("prune.r")
+source("mu.r")
 
 ans <- initial_data(10)
 y <- ans$y

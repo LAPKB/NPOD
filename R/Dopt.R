@@ -1,8 +1,4 @@
-setwd("R")
-source("PSI_2.r")
-source("burke.R")
-source("D.r")
-source("prune.r")
+
 
 Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma) {
   old_theta <- theta_0
