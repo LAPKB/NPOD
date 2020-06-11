@@ -1,7 +1,12 @@
+source("simulation2.r")
+
 initial_data <- function(K) {
   theta_0 <- matrix(rep(0, 2 * K), nrow = 2)
   #Simulation needs to be implemented to continue
-  # [t,y,true_theta] = simulation
+  ans <- simulation()
+  t <- ans$t
+  y <- ans$y
+  true_theta <- ans$true_theta
   sigma <- 0.005
   a <- 1
   b <- 4
