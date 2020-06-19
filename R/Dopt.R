@@ -1,5 +1,3 @@
-
-
 Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma) {
   old_theta <- theta_0
   count <- 1
@@ -7,23 +5,23 @@ Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma) {
   F1 <- 2 * F0
 
   library(neldermead)
-  option <- optimset(MaxFunEvals = 2000000000, TolX = 1e-14, MaxIter = 5, TolFun = 1e-14)
+  options <- optimset(MaxFunEvals = 2000000000, TolX = 1e-14, MaxIter = 5, TolFun = 1e-14)
   while (abs(F1 - F0) > theta_F) {
     F0 <- F1
 
-    P = PSI_2(y, t, old_theta, sigma)
-    ans <- burke(p)
+    P <- PSI_2(y, t, old_theta, sigma)
+    ans <- burke(P)
     lam <- ans$lambda
     ind <- (lam > 0.00000001) & (lam > (max(lam) / 1000))
     inb_theta <- old_theta[, ind]
 
-    P = PSI_2(y, t, inb_theta, sigma)
+    P <- PSI_2(y, t, inb_theta, sigma)
     ans <- burke(P)
     F1 <- ans$obj
     lam <- ans$lambda
 
-    ind2 <- lam > max(lam) / 100
-    new_w <- lam[a] / sum(lam[a])
+    ind2 <- (lam > (max(lam) / 1000))
+    new_w <- lam[ind2] / sum(lam[ind2])
     new_theta <- inb_theta[, ind2]
 
     if (abs(F1 - F0) <= theta_F) {
@@ -32,25 +30,26 @@ Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma) {
 
     K <- length(new_theta[1,])
     pyl <- P * new_w
-    nc_theta <- new_theta
-
-    library(parallel)
-
-    inputs <- 1:K
-    numCores <- detectCores()
-    cl <- makeCluster(numCores)
-    parfor <- function(l) {
+    # nc_theta <- new_theta
+    # 
+    # library(parallel)
+    # 
+    # inputs <- 1:K
+    # numCores <- detectCores()
+    # cl <- makeCluster(numCores)
+    #parfor <- function(l) 
+      
+     for (l in 1:K) {
       Dtheta <- function(.theta) { D(.theta, y, t, sigma, pyl) }
       fun <- function(.theta_parameter) {-1 * Dtheta(.theta_parameter) }
       cand_theta <- fminsearch(fun, new_theta[, l], options)
 
-      #this is the return value of parfor
-      nc_theta <- prune(new_theta, cand_theta, theta_d)
+      new_theta <- prune(new_theta, cand_theta, theta_d)
     }
-    results <- parLapply(cl, inputs, parfor)
-    #How do we need to process the results???
+    # results <- parLapply(cl, inputs, parfor)
+    # #How do we need to process the results???
 
-    old_theta <- nc_theta
+    old_theta <- new_theta
 
     count <- count + 1
 
