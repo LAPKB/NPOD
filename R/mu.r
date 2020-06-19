@@ -1,8 +1,11 @@
-mu <- function(theta, i, individuals) {
+mu <- function(theta, t, individual) {
 
+  # theta - vector of parameter values (the dim is the same as number of model parameters)
+  # t - vertor of measurement times
+  # individual - Individual Characteristics of the subject
 
   library(ospsuite) # PK-Sim R toolbox
-
+  source("set_Sim_Times.r")
   source("apply_and_simulate.R")
   ### Set scaling factors, which must be strictly positive
   x_scaling_factor <- theta[1]
@@ -37,14 +40,16 @@ mu <- function(theta, i, individuals) {
 
   ### Apply the above changes and then simulate with individual #i
   #we need a fresh simulation
-  simFilePath <- file.path(getwd(), paste0("PO SR 150 mg bupropion to human - Connarn et al 2017 - table.pkml"), fsep = .Platform$file.sep)
+  simFilePath <- file.path(getwd(), paste0("PO SR 150 mg bupropion to human - Connarn et al 2017 - table - June 2.pkml"), fsep = .Platform$file.sep)
   sim <- loadSimulation(simFilePath)
 
   # Note that the dissolution data path is unique to the simulation but it will have following format:
   # "Applications|Administration Protocol|Formulation|Fraction (dose)"
 
+  set_Sim_Times(sim,t)
+  
   simulationResults <- apply_and_simulate(simulation = sim,
-                                            individual_chars = individuals[[i]],
+                                            individual_chars = individual,
                                             scaling_factors = scaling_factors,
                                             dissolution_data_path = "Applications|PO 150 mg - human|SR PO 150 mg - FDA table|Fraction (dose)",
                                             par_values = par_values)
@@ -53,12 +58,12 @@ mu <- function(theta, i, individuals) {
   resultsData <- getOutputValues(simulationResults, quantitiesOrPaths = resultsPath)
   resultsTime <- resultsData$data$Time
   resultsValues <- resultsData$data$`Organism|PeripheralVenousBlood|Bupropion human 1st order|Plasma (Peripheral Venous Blood)`
-
-  return(resultsValues)
+  ind = c(1:length(resultsValues))
+  return(resultsValues[ind%%2==0])
 }
 
-theta <- c(2, 0.5, 2, 1, 0.5)
-i <- 1
-y <- mu(theta, i)
-plot(resultsTime[[1]], y)
+# theta <- c(2, 0.5, 2, 1, 0.5)
+# t <- c(60,120,180,240) 
+# y <- mu(theta, t, individuals[[1]])
+# plot(t, y)
 

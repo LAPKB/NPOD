@@ -24,17 +24,17 @@ theta <- ans$theta
 w <- ans$w
 logLikelihood <- ans$logLikelihood
 
-P <- PSI_2(y, t, thera, sigma)
-PYL <- P * w
+# P <- PSI_2(y, t, thera, sigma)
+# PYL <- P * w
 
-Dfun <- function(.theta_parameter) { D(.theta_parameter, y, t, sigma, PYL) }
-K <- seq(from = 1.5, to = 3.5, by = 0.1)
-V <- seq(from = 0.3, to = 0.5, by = 0.05)
-Z <- matrix(rep(0, length(K) * length(V)), nrow = length(K))
-for (i in 1:length(K)) {
-  for (j in 1:length(V)) {
-    Z[i, j] = Dfun(c(K[i], V[i]))
-  }
-}
+# Dfun <- function(.theta_parameter) { D(.theta_parameter, y, t, sigma, PYL) }
+# K <- seq(from = 1.5, to = 3.5, by = 0.1)
+# V <- seq(from = 0.3, to = 0.5, by = 0.05)
+# Z <- matrix(rep(0, length(K) * length(V)), nrow = length(K))
+# for (i in 1:length(K)) {
+#   for (j in 1:length(V)) {
+#     Z[i, j] = Dfun(c(K[i], V[i]))
+#   }
+# }
 
 #Plots

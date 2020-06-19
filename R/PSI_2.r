@@ -44,7 +44,7 @@ PSI_2 <- function(y, t, theta, sigma) {
 
   for (i in 1:N) {
     for (l in 1:K) {
-      psi[i, l] <- prob(y[i,], t, theta[, l], sigma, individuals)
+      psi[i, l] <- prob(y[i,], t[i,], theta[, l], sigma, individuals[[i]])
     }
   }
   return(psi)
