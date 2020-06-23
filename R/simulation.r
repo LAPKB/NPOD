@@ -9,7 +9,7 @@ setwd("R")
 source("mix_norm.r")
 source("apply_and_simulate.R")
 
-
+simulation<-function(){
 
 # createIndividualCharacteristics() and createIndividual() require at least PK-Sim v9.0.119
 # so we need to use the portable version of PK-Sim
@@ -109,6 +109,8 @@ for (i in 1:number_of_individuals){
   resultsTime[[i]] <- resultsData$data$Time
   resultsValues[[i]] <- resultsData$data$`Organism|PeripheralVenousBlood|Bupropion human 1st order|Plasma (Peripheral Venous Blood)`
   
+}
+
 }
 
 #Plotting the results

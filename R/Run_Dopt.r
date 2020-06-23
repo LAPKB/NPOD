@@ -13,11 +13,13 @@ t <- ans$t
 sigma <- ans$sigma
 theta_0 <- ans$theta_0
 true_theta <- ans$true_theta
+a<-ans$a
+b<-ans$b
 
 theta_F <- 10e-2
 theta_d <- 10e-4
 
-ans <- Dopt(y, t, theta_0, theta_F, theta_d, sigma)
+ans <- Dopt(y, t, theta_0, theta_F, theta_d, sigma,a,b)
 
 count <- ans$count
 theta <- ans$theta

@@ -20,5 +20,5 @@ initial_data <- function(K) {
 
   }
 
-  return(list("y" = y, "t" = t, "sigma" = sigma, "theta_0" = theta_0, "true_theta" = true_theta))
+  return(list("y" = y, "t" = t, "sigma" = sigma, "theta_0" = theta_0, "true_theta" = true_theta, "a" = a, "b"= b))
 }
