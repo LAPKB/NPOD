@@ -1,4 +1,4 @@
-Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma) {
+Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma,a,b) {
   old_theta <- theta_0
   count <- 1
   F0 <- -10 ^ (30)
@@ -44,7 +44,7 @@ Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma) {
       fun <- function(.theta_parameter) {-1 * Dtheta(.theta_parameter) }
       cand_theta <- fminsearch(fun, new_theta[, l], options)
 
-      new_theta <- prune(new_theta, cand_theta, theta_d)
+      new_theta <- prune(new_theta, cand_theta, theta_d,a,b)
     }
     # results <- parLapply(cl, inputs, parfor)
     # #How do we need to process the results???
