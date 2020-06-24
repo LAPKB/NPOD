@@ -97,6 +97,9 @@ resultsTime<-vector(mode = "list", length = number_of_individuals)
 resultsValues<-vector(mode = "list", length = number_of_individuals)
 
 for (i in 1:number_of_individuals){
+  # Start the clock!
+  #ptm <- proc.time()
+  
   set_Sim_Times(sim,sort(sample.int(1440,5))) #set 5 random sample times between 0 and 1440 minutes
   simulationResults <- apply_and_simulate(simulation = sim, 
                                           individual_chars = individuals[[i]],
@@ -104,6 +107,9 @@ for (i in 1:number_of_individuals){
                                           dissolution_data_path = "Applications|PO 150 mg - human|SR PO 150 mg - FDA table|Fraction (dose)",
                                           par_values = par_values[[i]]
                                           )
+  # Stop the clock
+  #proc.time() - ptm
+  
   resultsPath <- simulationResults$allQuantityPaths[[1]]
   resultsData <- getOutputValues(simulationResults, quantitiesOrPaths = resultsPath)
   resultsTime[[i]] <- resultsData$data$Time
