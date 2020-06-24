@@ -1,4 +1,4 @@
-prob <- function(y, t, theta, sigma, individual) {
+prob <- function(y, t=NULL, theta, sigma, individual=NULL) {
 
   j <- length(y)
   z <- matrix(0, 1, 10)
