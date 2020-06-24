@@ -6,44 +6,43 @@ Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma,a,b) {
 
   library(neldermead)
   options <- optimset(MaxFunEvals = 2000000000, TolX = 1e-14, MaxIter = 5, TolFun = 1e-14)
-  while (abs(F1 - F0) > theta_F) {
+#  old_F <-c()
+  new_F <-c()
+#  old_F[count] <- F1
+  new_F[count] <- F0
+  new_F[count+1] <- F1
+  #while (abs(F1 - F0) > theta_F) {
+  while (abs(new_F[count+1] - new_F[count]) > theta_F) {
     
-    F0 <- 0
-    inb_F <-0
+    #old_F[count] <-new_F[count] 
 
-    P <- PSI_2(y, t, old_theta, sigma)
-    print(F1)
-    print(F0)
-    ans1 <- burke(P)
+ 
+    P1 <- PSI_2(y, t, old_theta, sigma)
+    ans1 <- burke(P1)
     lam1 <- ans1$lambda
     ind <- (lam1 > 0.00000001) & (lam1 > (max(lam1) / 1000))
     inb_theta <- matrix(old_theta[,ind],nrow = nrow(old_theta),ncol = length(old_theta[,ind]))
     print(inb_theta)
     
-    P <- PSI_2(y, t, inb_theta, sigma)
-    print(F1)
-    print(F0)
-    ans2 <- burke(P)
-    print(F1)
-    print(F0)
-    inb_F <- ans2$fobj
+    P2 <- PSI_2(y, t, inb_theta, sigma)
+    ans2 <- burke(P2)
+
+    #updating of F1
+    new_F[count+2] <- ans2$fobj
     lam2 <- ans2$lambda
 
     ind2 <- (lam2 > (max(lam2)/1000))
     new_w <- lam2[ind2] / sum(lam2[ind2])
     new_theta <- matrix(inb_theta[,ind2],nrow = nrow(inb_theta),ncol = length(inb_theta[,ind2]))
+ 
 
-    F0<-F1
-    F1=inb_F
-    print(F1)
-    print(F0)
     
-      if (abs(F1 - F0) <= theta_F) {
+      if (abs(new_F[count+2] - new_F[count+1]) <= theta_F) {
         break
         }
-
+print(abs(new_F[count+2] - new_F[count+1]))
     K <- length(new_theta[1,])
-    pyl <- P %*% new_w
+    pyl <- P2 %*% new_w
       
     for (l in 1:K) {
       Dtheta <- function(.theta) { D(.theta, y, t, sigma, pyl) }
@@ -59,5 +58,5 @@ Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma,a,b) {
     count <- count + 1
     }
 
-  return(list("count" = count, "theta" = new_theta, "w" = new_w, "LogLikelihood" = F1))
+  return(list("count" = count, "theta" = new_theta, "w" = new_w, "LogLikelihood" = new_F[length(new_F)]))
   }
