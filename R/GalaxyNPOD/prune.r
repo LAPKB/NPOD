@@ -5,8 +5,9 @@ prune <- function(theta, theta_plus, theta_d, a, b){
     dist = Inf
 
     for( this_col in 1:ncol(theta)){
-        new_dist = sum(abs(theta_plus - theta[,this_col]/(b-a)))
+        new_dist = sum(abs(theta_plus - theta[,this_col])/(b-a))
         dist = min(dist, new_dist)
+        print(dist)
     }
     up = sign(pmin(theta_plus-a))
     down = sign(pmin(b-theta_plus))

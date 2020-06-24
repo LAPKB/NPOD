@@ -1,3 +1,4 @@
+rm(list=ls())
 setwd("R/GalaxyNPOD")
 #source("initial_data.r")
 source("Dopt.R")
@@ -12,7 +13,9 @@ y <- matrix(c(9.1720, 9.3500, 9.4830, 9.5580, 9.7750, 10.2270, 10.4060, 16.0840,
 length(y)
 t <- NULL
 sigma <- 2.08
-theta_0 <- matrix(8+30*runif(3),nrow = 1,ncol = 3)
+
+theta_0 <- matrix(c(14.5688,    9.4113,   28.3659),nrow = 1,ncol = 3)
+#theta_0 <- matrix(8+30*runif(3),nrow = 1,ncol = 3)
 #true_theta <- ans$true_theta
 a<-8
 b<-38
@@ -24,12 +27,17 @@ ans <- Dopt(y, t, theta_0, theta_F, theta_d, sigma,a,b)
 count <- ans$count
 theta <- ans$theta
 w <- ans$w
-logLikelihood <- ans$logLikelihood
+logLikelihood <- ans$LogLikelihood
 
-# P <- PSI_2(y, t, thera, sigma)
-# PYL <- P * w
+P <- PSI_2(y, t, theta, sigma)
+PYL <- P %*% w
 
-# Dfun <- function(.theta_parameter) { D(.theta_parameter, y, t, sigma, PYL) }
+Dfun <- function(.theta) { D(.theta, y, t, sigma, PYL) }
+nDfun <- function(.theta) { (-1)*Dfun(.theta) }
+x = fminbnd(nDfun,x0 = 9, xmin=8,xmax=38)
+max_value = Dfun(x$optbase$xopt)
+h<-Vectorize(Dfun)
+curve(h, 0,40)
 # K <- seq(from = 1.5, to = 3.5, by = 0.1)
 # V <- seq(from = 0.3, to = 0.5, by = 0.05)
 # Z <- matrix(rep(0, length(K) * length(V)), nrow = length(K))
