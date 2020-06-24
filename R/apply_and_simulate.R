@@ -26,17 +26,17 @@ apply_and_simulate <- function(simulation,
         setParameterValuesByPath(individual$distributedParameters$paths, 
                                  individual$distributedParameters$values,
                                  simulation = simulation)
-        # test that it worked
-        number_of_distributed_parameters <- length(individual$distributedParameters$paths)
-        for (i in 1:number_of_distributed_parameters) {
-            test_parameter <- getParameter(individual$distributedParameters$paths[i], simulation)
-            value_after <- as.numeric(test_parameter$value)
-            if (individual$distributedParameters$values[i]!=value_after){
-                print(i)
-                print("Unsuccessful in setting parameter.")
-                return(NULL)
-            }
-        }
+        # # test that it worked
+        # number_of_distributed_parameters <- length(individual$distributedParameters$paths)
+        # for (i in 1:number_of_distributed_parameters) {
+        #     test_parameter <- getParameter(individual$distributedParameters$paths[i], simulation)
+        #     value_after <- as.numeric(test_parameter$value)
+        #     if (individual$distributedParameters$values[i]!=value_after){
+        #         print(i)
+        #         print("Unsuccessful in setting parameter.")
+        #         return(NULL)
+        #     }
+        # }
     }
     
     
