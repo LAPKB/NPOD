@@ -22,7 +22,7 @@ Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma,a,b) {
     lam1 <- ans1$lambda
     ind <- (lam1 > 0.00000001) & (lam1 > (max(lam1) / 1000))
     inb_theta <- matrix(old_theta[,ind],nrow = nrow(old_theta),ncol = length(old_theta[,ind]))
-    print(inb_theta)
+    #print(inb_theta)
     
     P2 <- PSI_2(y, t, inb_theta, sigma)
     ans2 <- burke(P2)
@@ -40,7 +40,7 @@ Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma,a,b) {
       if (abs(new_F[count+2] - new_F[count+1]) <= theta_F) {
         break
         }
-print(abs(new_F[count+2] - new_F[count+1]))
+#print(abs(new_F[count+2] - new_F[count+1]))
     K <- length(new_theta[1,])
     pyl <- P2 %*% new_w
       
@@ -50,7 +50,7 @@ print(abs(new_F[count+2] - new_F[count+1]))
       cand_theta <- fminsearch(fun, new_theta[,l], options)
       
       new_theta <- prune(new_theta, cand_theta$optbase$xopt, theta_d,a,b)
-      print(new_theta)
+      #print(new_theta)
       }
 
     old_theta <- new_theta

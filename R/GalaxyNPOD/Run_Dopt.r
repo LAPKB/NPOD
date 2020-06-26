@@ -38,13 +38,4 @@ x = fminbnd(nDfun,x0 = 9, xmin=8,xmax=38)
 max_value = Dfun(x$optbase$xopt)
 h<-Vectorize(Dfun)
 curve(h, 0,40)
-# K <- seq(from = 1.5, to = 3.5, by = 0.1)
-# V <- seq(from = 0.3, to = 0.5, by = 0.05)
-# Z <- matrix(rep(0, length(K) * length(V)), nrow = length(K))
-# for (i in 1:length(K)) {
-#   for (j in 1:length(V)) {
-#     Z[i, j] = Dfun(c(K[i], V[i]))
-#   }
-# }
 
-#Plots
