@@ -20,10 +20,9 @@ initPKSim("C:/Users/alona.kryshchenko/Dropbox (CSUCI)/For Alan/SummerGrant/Bupro
 
 #function to simulate only at specific times
 set_Sim_Times <- function(simulation,times){
-  clearOutputIntervals(simulation) #first clear default
-  for(i in times){ #now add new "intervals" for each sample time
-    addOutputInterval(simulation = simulation, startTime = i, endTime = i+1, resolution = 1)
-  }
+ simulation$outputSchema$clear() #first clear default
+ simulation$outputSchema$addTimePoints(as.numeric(times)) #add times
+  
 }
 
 ### Load the individuals into a list of objects holding their individual characteristics
@@ -100,7 +99,7 @@ for (i in 1:number_of_individuals){
   # Start the clock!
   #ptm <- proc.time()
   
-  set_Sim_Times(sim,sort(sample.int(1440,5))) #set 5 random sample times between 0 and 1440 minutes
+  set_Sim_Times(sim,times = sort(sample.int(1440,5))) #set 5 random sample times between 0 and 1440 minutes
   simulationResults <- apply_and_simulate(simulation = sim, 
                                           individual_chars = individuals[[i]],
                                           scaling_factors = scaling_factors[,i],
