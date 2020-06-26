@@ -41,7 +41,7 @@ D <- function(theta_parameter, y, t, sigma, PYL) {
   D_components = -N
 
   for (i in 1:N) {
-    D_components <- D_components + prob(y[i,], t[i,], theta_parameter, sigma, individuals[[i]]) / PYL(i)
+    D_components <- D_components + prob(y[i,], t[i,], theta_parameter, sigma, individuals[[i]]) / PYL[i]
   }
   return(D_components)
 }
