@@ -1,5 +1,5 @@
-setwd("R")
-source("initial_data.r")
+setwd("C:/Users/alona.kryshchenko/Documents/GitHub/NPOD/R/BuproprionNPOD")
+#source("initial_data.r")
 source("Dopt.R")
 source("PSI_2.r")
 source("D.r")
@@ -7,8 +7,20 @@ source("burke.R")
 source("prune.r")
 source("mu.r")
 
+
+
+library(ospsuite)   # PK-Sim R toolbox
+library(readr)  
+library(ggplot2)
+library(tibble)
+library(tidyr)
+library(neldermead)
 library(DiceDesign)
 library(readxl)
+
+#this statement not needed on LAPKB machine
+initPKSim("C:/Users/alona.kryshchenko/Dropbox (CSUCI)/For Alan/SummerGrant/Bupropion with R-Toolbox/PK-Sim 9.0.144")
+
 
 ### Load the individuals into a list of objects holding their individual characteristics
 population_data <- read_csv("bupropion baseline demographics - to share - converted to metric units.csv")
@@ -48,25 +60,30 @@ for (i in 1:number_of_individuals) {
 Bupropion150PKdata <- read.csv("Bupropion150PKdata.csv")
 time<-vector(mode = "list", length = number_of_individuals)
 y<-vector(mode = "list", length = number_of_individuals)
+sigma<-vector(mode = 'list', length = number_of_individuals)
 for (i in 1:number_of_individuals){
   time[[i]]<- Bupropion150PKdata[,1][Bupropion150PKdata[,i+1]!=999]*60
     y[[i]]<-Bupropion150PKdata[,i+1][Bupropion150PKdata[,i+1]!=999]
+    sigma[[i]]<-0.5*1.65 + 0.1*y[[i]]
   }
 
 #ans <- initial_data(10)
 # y <- ans$y
 # t <- ans$t
-sigma <- 25
+#sigma <- 25
+#c0(0.5)min(y)+c1(0.1)y_ij
+
+
 #true_theta <- ans$true_theta
 a<-c(0.5,0.5,0.5,0.5,0)
 b<-c(2,2,2,2,100)
 
-theta_0 <- a+t(runif.faure(1000,5)$design)*(b-a)
+theta_0 <- a+t(runif.faure(10,5)$design)*(b-a)
 
 theta_F <- 10e-2
 theta_d <- 10e-4
 
-ans <- Dopt(y, t, theta_0, theta_F, theta_d, sigma,a,b,individuals)
+ans <- Dopt(y, time, theta_0, theta_F, theta_d, sigma,a,b,individuals)
 
 count <- ans$count
 theta <- ans$theta

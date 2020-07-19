@@ -38,13 +38,13 @@ PSI_2 <- function(y, t, theta, sigma, individuals) {
 #     individuals[[i]] <- individual_chars
 #   }
 
-  N <- length(y[, 1])
+  N <- length(y)
   K <- length(theta[1,])
   psi <- matrix(0, N, K)
 
   for (i in 1:N) {
     for (l in 1:K) {
-      psi[i, l] <- prob(y[i,], t[i,], theta[, l], sigma, individuals[[i]])
+      psi[i, l] <- prob(y[[i]], t[[i]], theta[, l], sigma[[i]], individuals[[i]])
     }
   }
   return(psi)
