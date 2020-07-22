@@ -50,4 +50,4 @@ figure(1); clf;
 fplot(Dtheta, [0,40])
 grid on
 
-
+stem(theta,w) 

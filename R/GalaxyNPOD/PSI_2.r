@@ -1,5 +1,3 @@
-source("prob.r")
-
 PSI_2 <- function(y, t=NULL, theta, sigma) {
 
   N <- length(y[, 1])
