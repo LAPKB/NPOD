@@ -1,3 +1,4 @@
+rm(list=ls())
 setwd("C:/Users/alona.kryshchenko/Documents/GitHub/NPOD/R/BuproprionNPOD")
 #source("initial_data.r")
 source("Dopt.R")
@@ -29,7 +30,7 @@ population_data <- read_csv("bupropion baseline demographics - to share - conver
 # Initialize list of individuals
 number_of_individuals <- length(population_data$ID)
 
-individuals <- vector(mode = "list", length = number_of_individuals)
+individuals_old <- vector(mode = "list", length = number_of_individuals)
 for (i in 1:number_of_individuals) {
   # Process population
   if (population_data$Population[i] == "European") {
@@ -54,18 +55,25 @@ for (i in 1:number_of_individuals) {
                                                       height = population_data$`Height (cm)`[i], heightUnit = "cm",
                                                       age = 40, ageUnit = "year(s)")
   # Add to list
-  individuals[[i]] <- individual_chars
+  individuals_old[[i]] <- individual_chars
 }
 
 Bupropion150PKdata <- read.csv("Bupropion150PKdata.csv")
 time<-vector(mode = "list", length = number_of_individuals)
-y<-vector(mode = "list", length = number_of_individuals)
-sigma<-vector(mode = 'list', length = number_of_individuals)
+y_old<-vector(mode = "list", length = number_of_individuals)
+sigma_old<-vector(mode = 'list', length = number_of_individuals)
 for (i in 1:number_of_individuals){
   time[[i]]<- Bupropion150PKdata[,1][Bupropion150PKdata[,i+1]!=999]*60
-    y[[i]]<-Bupropion150PKdata[,i+1][Bupropion150PKdata[,i+1]!=999]
-    sigma[[i]]<-0.5*1.65 + 0.1*y[[i]]
-  }
+    y_old[[i]]<-Bupropion150PKdata[,i+1][Bupropion150PKdata[,i+1]!=999]
+    sigma_old[[i]]<-0.5*1.65 + 0.1*y_old[[i]]
+}
+
+ind<-c(0)
+for (i in 1:33){ind[i]=length(y_old[[i]])!=0}
+t<-time[as.logical(ind)]
+individuals<-individuals_old[as.logical(ind)]
+y<-y_old[as.logical(ind)]
+sigma<-sigma_old[as.logical(ind)]
 
 #ans <- initial_data(10)
 # y <- ans$y
@@ -83,7 +91,7 @@ theta_0 <- a+t(runif.faure(10,5)$design)*(b-a)
 theta_F <- 10e-2
 theta_d <- 10e-4
 
-ans <- Dopt(y, time, theta_0, theta_F, theta_d, sigma,a,b,individuals)
+ans <- Dopt(y, t, theta_0, theta_F, theta_d, sigma,a,b,individuals)
 
 count <- ans$count
 theta <- ans$theta
