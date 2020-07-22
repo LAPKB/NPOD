@@ -1,5 +1,3 @@
-source("prob.r")
-
 D <- function(theta_parameter, y, t=NULL, sigma, PYL) {
   
   N <- length(y[, 1])
