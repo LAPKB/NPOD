@@ -1,4 +1,4 @@
-setwd("R/BuproprionNPOD")
+#setwd("R/BuproprionNPOD")
 ipm <- function(psi, ldpsi, theta, ldtheta, npoint, nsub, ijob, x, dx, y, dy, fobj, gap, nvar, keep, ihess, isupres) {
 
   #Windows
