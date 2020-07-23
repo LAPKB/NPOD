@@ -1,4 +1,5 @@
 mu <- function(theta, t, individual) {
+  print("mu")
 
   # theta - vector of parameter values (the dim is the same as number of model parameters)
   # t - vertor of measurement times
@@ -39,10 +40,10 @@ mu <- function(theta, t, individual) {
   # Note that the dissolution data path is unique to the simulation but it will have following format:
   # "Applications|Administration Protocol|Formulation|Fraction (dose)"
 
-  set_Sim_Times(sim,t)
-  
+  set_Sim_Times(sim, t)
+
   simulationResults <- apply_and_simulate(simulation = sim,
-                                            individual_chars = individuals[[1]],
+                                            individual_chars = individual,
                                             scaling_factors = scaling_factors,
                                             dissolution_data_path = "Applications|PO 150 mg - human|SR PO 150 mg - FDA table|Fraction (dose)",
                                             par_values = par_values)

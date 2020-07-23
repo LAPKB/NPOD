@@ -1,5 +1,5 @@
-rm(list=ls())
-setwd("C:/Users/alona.kryshchenko/Documents/GitHub/NPOD/R/BuproprionNPOD")
+rm(list = ls())
+setwd("R/BuproprionNPOD")
 #source("initial_data.r")
 source("Dopt.R")
 source("PSI_2.r")
@@ -10,8 +10,8 @@ source("mu.r")
 
 
 
-library(ospsuite)   # PK-Sim R toolbox
-library(readr)  
+library(ospsuite) # PK-Sim R toolbox
+library(readr)
 library(ggplot2)
 library(tibble)
 library(tidyr)
@@ -20,7 +20,7 @@ library(DiceDesign)
 library(readxl)
 
 #this statement not needed on LAPKB machine
-initPKSim("C:/Users/alona.kryshchenko/Dropbox (CSUCI)/For Alan/SummerGrant/Bupropion with R-Toolbox/PK-Sim 9.0.144")
+#initPKSim("C:/Users/alona.kryshchenko/Dropbox (CSUCI)/For Alan/SummerGrant/Bupropion with R-Toolbox/PK-Sim 9.0.144")
 
 
 ### Load the individuals into a list of objects holding their individual characteristics
@@ -59,21 +59,21 @@ for (i in 1:number_of_individuals) {
 }
 
 Bupropion150PKdata <- read.csv("Bupropion150PKdata.csv")
-time<-vector(mode = "list", length = number_of_individuals)
-y_old<-vector(mode = "list", length = number_of_individuals)
-sigma_old<-vector(mode = 'list', length = number_of_individuals)
-for (i in 1:number_of_individuals){
-  time[[i]]<- Bupropion150PKdata[,1][Bupropion150PKdata[,i+1]!=999]*60
-    y_old[[i]]<-Bupropion150PKdata[,i+1][Bupropion150PKdata[,i+1]!=999]
-    sigma_old[[i]]<-0.5*1.65 + 0.1*y_old[[i]]
+time <- vector(mode = "list", length = number_of_individuals)
+y_old <- vector(mode = "list", length = number_of_individuals)
+sigma_old <- vector(mode = 'list', length = number_of_individuals)
+for (i in 1:number_of_individuals) {
+  time[[i]] <- Bupropion150PKdata[, 1][Bupropion150PKdata[, i + 1] != 999] * 60
+  y_old[[i]] <- Bupropion150PKdata[, i + 1][Bupropion150PKdata[, i + 1] != 999]
+  sigma_old[[i]] <- 0.5 * 1.65 + 0.1 * y_old[[i]]
 }
 
-ind<-c(0)
-for (i in 1:33){ind[i]=length(y_old[[i]])!=0}
-t<-time[as.logical(ind)]
-individuals<-individuals_old[as.logical(ind)]
-y<-y_old[as.logical(ind)]
-sigma<-sigma_old[as.logical(ind)]
+ind <- c(0)
+for (i in 1:33) { ind[i] = length(y_old[[i]]) != 0 }
+t <- time[as.logical(ind)]
+individuals <- individuals_old[as.logical(ind)]
+y <- y_old[as.logical(ind)]
+sigma <- sigma_old[as.logical(ind)]
 
 #ans <- initial_data(10)
 # y <- ans$y
@@ -83,15 +83,15 @@ sigma<-sigma_old[as.logical(ind)]
 
 
 #true_theta <- ans$true_theta
-a<-c(0.5,0.5,0.5,0.5,0)
-b<-c(2,2,2,2,100)
+a <- c(0.01, 0.01, 0.01)
+b <- c(100, 1.1, 100)
 
-theta_0 <- a+t(runif.faure(10,5)$design)*(b-a)
+theta_0 <- a + t(runif.faure(10, 3)$design) * (b - a)
 
 theta_F <- 10e-2
 theta_d <- 10e-4
 
-ans <- Dopt(y, t, theta_0, theta_F, theta_d, sigma,a,b,individuals)
+ans <- Dopt(y, t, theta_0, theta_F, theta_d, sigma, a, b, individuals)
 
 count <- ans$count
 theta <- ans$theta
