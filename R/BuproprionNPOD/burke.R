@@ -1,10 +1,9 @@
-
-
+setwd("R/BuproprionNPOD")
 ipm <- function(psi, ldpsi, theta, ldtheta, npoint, nsub, ijob, x, dx, y, dy, fobj, gap, nvar, keep, ihess, isupres) {
 
   #Windows
   #load fortran ipm library
-  dyn.load("C:/Users/alona.kryshchenko/Documents/GitHub/NPOD/R/BuproprionNPOD/ipm.dll")
+  dyn.load("ipm.dll")
 
   #Linux/MAC
   #dyn.load("ipm.so")
@@ -25,6 +24,12 @@ ipm <- function(psi, ldpsi, theta, ldtheta, npoint, nsub, ijob, x, dx, y, dy, fo
   if (!is.integer(keep)) { storage.mode(keep) <- 'integer' }
   if (!is.integer(ihess)) { storage.mode(ihess) <- 'integer' }
   if (!is.integer(isupres)) { storage.mode(isupres) <- 'integer' }
+  #   $lambda
+  #  [1] 1.172667e-13 1.172667e-13 2.000000e-01 3.000000e-01 1.173147e-13
+  #  [6] 1.000000e-01 2.999733e-01 1.000267e-01 1.172688e-13 1.172667e-13
+
+  # $fobj
+  # [1] 165.7383
 
   #   if (length(x) != length(w)) { stop("Both vectors should have the same size") }
   .Call("c_emint", psi, ldpsi, theta, ldtheta, npoint, nsub, ijob, x, dx, y, dy, fobj, gap, nvar, keep, ihess, isupres)
@@ -32,44 +37,69 @@ ipm <- function(psi, ldpsi, theta, ldtheta, npoint, nsub, ijob, x, dx, y, dy, fo
 }
 
 burke <- function(PSI) {
-  # PSI = pr( observation | support point )
-  nsub <- dim(PSI)[1]
-  npoint <- dim(PSI)[2]
+  # # PSI = pr( observation | support point )
+  # nsub <- rlang::duplicate(dim(PSI)[1], shallow = F)
+  # npoint <- dim(PSI)[2]
 
-  # theta has one support point and it's probability on
-  # each row; theta is used only if ijob == 1
-  ldtheta <- 10 # dim(theta)[1]
-  nvar <- 5 # dim(theta)[2] - 1
-  theta <- matrix(c(seq(1, 60, 1)), nrow = 10, ncol = nvar + 1) #corden
+  # # theta has one support point and it's probability on
+  # # each row; theta is used only if ijob == 1
+  # ldtheta <- 10 # dim(theta)[1]
+  # nvar <- 5 # dim(theta)[2] - 1
+  # theta <- matrix(c(seq(1, 60, 1)), nrow = 10, ncol = nvar + 1) #corden
 
-  # working arrays -- must be npoint long
-  ldpsi = nsub #is passed to low level linear algebra routines
-  x <- c(rep(1 / npoint, npoint)) # These are the returned probabilities !!!
-  dx <- c(rep(0, npoint))
-  y <- c(rep(0, npoint))
-  dy <- c(rep(0, npoint))
+  # # working arrays -- must be npoint long
+  # ldpsi = nsub #is passed to low level linear algebra routines
+  # x <- c(rep(1 / npoint, npoint)) # These are the returned probabilities !!!
+  # dx <- c(rep(0, npoint))
+  # y <- c(rep(0, npoint))
+  # dy <- c(rep(0, npoint))
 
-  # will be reset inside of ipm; initial values here are meaningless:
+  # # will be reset inside of ipm; initial values here are meaningless:
+  # fobj <- 10 ^ -8
+  # gap <- 10 ^ -10 # will be reset inside of ipm
+  # keep <- 0 # will be set > 0 inside of ipm
+
+  # # flags that control text output or program control
+  # ihess <- 0 # flags Hessian error
+  # isupres <- 1 # 0 to not suppress error writes, 1 to supress error writes
+  # ijob <- 0 # do not condense
+  denstor <- matrix(c(seq(1, 20, 1)), nrow = 10, ncol = 4)
+  nvar = 5
+  nmaxsub <- 10
+  corden <- matrix(c(seq(1, 60, 1)), nrow = 10, ncol = nvar + 1)
+  nmaxgrd <- 1024
+  nactive <- 10
+  nsub <- 10
+  ijob <- 0
+  corden[, nvar + 1] <- 0.2
   fobj <- 10 ^ -8
-  gap <- 10 ^ -10 # will be reset inside of ipm
-  keep <- 0 # will be set > 0 inside of ipm
-
-  # flags that control text output or program control
-  ihess <- 0 # flags Hessian error
-  isupres <- 1 # 0 to not suppress error writes, 1 to supress error writes
-  ijob <- 0 # do not condense
-  ipm(PSI, ldpsi, theta, ldtheta, npoint, nsub, ijob, x, dx, y, dy, fobj, gap, nvar, keep, ihess, isupres)
+  gap <- 10 ^ -10
+  nvar <- 5
+  keep <- 10
+  ihess <- 0
+  isupress <- 1
+  #ipm(PSI, ldpsi, theta, ldtheta, npoint, nsub, ijob, x, dx, y, dy, fobj, gap, nvar, keep, ihess, isupres)
+  ipm(as.matrix(PSI), nmaxsub, corden, nmaxgrd, nactive, nsub, ijob,
+  corden[, nvar + 1], denstor[, 1], denstor[, 2], denstor[, 3],
+  fobj, gap, nvar, keep, ihess, isupress)
 }
 
 
 .test_burke <- function() {
   #Real data taken from the matlab example
   library(readxl)
-  PSI <- read_excel('R/PSI.xlsx',
+  PSI <- read_excel('../PSI.xlsx',
                   col_names = FALSE)
   ans <- burke(as.matrix(PSI))
   print(ans)
 }
+
+.test_burke2 <- function() {
+  P1 <- readRDS(file = "p1_data.rds")
+  ans <- burke(as.matrix(P1))
+  print(ans)
+}
+
 
 
 
