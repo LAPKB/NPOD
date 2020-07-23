@@ -48,9 +48,9 @@ Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma,a,b) {
       Dtheta <- function(.theta) { D(.theta, y, t, sigma, pyl) }
       fun <- function(.theta_parameter) {-1 * Dtheta(.theta_parameter) }
       cand_theta <- fminsearch(fun, new_theta[,l], options)
-      
+      print(cand_theta)
       new_theta <- prune(new_theta, cand_theta$optbase$xopt, theta_d,a,b)
-      #print(new_theta)
+      print(new_theta)
       }
 
     old_theta <- new_theta
