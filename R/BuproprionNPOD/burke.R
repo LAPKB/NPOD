@@ -32,7 +32,10 @@ ipm <- function(psi, ldpsi, theta, ldtheta, npoint, nsub, ijob, x, dx, y, dy, fo
   # [1] 165.7383
 
   #   if (length(x) != length(w)) { stop("Both vectors should have the same size") }
+  sink("log.txt", append = FALSE, split = TRUE)
   .Call("c_emint", psi, ldpsi, theta, ldtheta, npoint, nsub, ijob, x, dx, y, dy, fobj, gap, nvar, keep, ihess, isupres)
+  print(list("fobj" = fobj, "lambda" = x))
+  sink()
   return(list("lambda" = x, "fobj" = fobj))
 }
 
@@ -63,21 +66,36 @@ burke <- function(PSI) {
   # ihess <- 0 # flags Hessian error
   # isupres <- 1 # 0 to not suppress error writes, 1 to supress error writes
   # ijob <- 0 # do not condense
-  denstor <- matrix(c(seq(1, 20, 1)), nrow = 10, ncol = 4)
-  nvar = 5
-  nmaxsub <- 10
-  corden <- matrix(c(seq(1, 60, 1)), nrow = 10, ncol = nvar + 1)
+  denstor <- matrix(c(seq(1, 20, 1)), nrow = ncol(PSI), ncol = 4)
+  nvar = nrow(PSI)
+  nmaxsub <- nrow(PSI)
+  corden <- matrix(c(seq(1, ncol(PSI) * (nvar + 1), 1)), nrow = ncol(PSI), ncol = nvar + 1)
   nmaxgrd <- 1024
-  nactive <- 10
-  nsub <- 10
+  nactive <- ncol(PSI)
+  nsub <- ncol(PSI)
   ijob <- 0
   corden[, nvar + 1] <- 0.2
   fobj <- 10 ^ -8
   gap <- 10 ^ -10
-  nvar <- 5
-  keep <- 10
+  nvar <- nrow(PSI)
+  keep <- ncol(PSI)
   ihess <- 0
   isupress <- 1
+
+  # denstor <- matrix(c(seq(1, 20, 1)), nrow = ncol(PSI), ncol = 4)
+  # nvar = nrow(PSI)
+  # nmaxsub <- nrow(PSI)
+  # corden <- matrix(c(seq(1, ncol(PSI) * (nvar + 1), 1)), nrow = ncol(PSI), ncol = nvar + 1)
+  # nmaxgrd <- 1024
+  # nactive <- ncol(PSI)
+  # nsub <- nrow(PSI)
+  # ijob <- 0
+  # corden[, nvar + 1] <- 0.2
+  # fobj <- 10 ^ -8
+  # gap <- 10 ^ -10
+  # nvar <- nrow(PSI)
+  # keep <- ncol(PSI)
+
   #ipm(PSI, ldpsi, theta, ldtheta, npoint, nsub, ijob, x, dx, y, dy, fobj, gap, nvar, keep, ihess, isupres)
   ipm(as.matrix(PSI), nmaxsub, corden, nmaxgrd, nactive, nsub, ijob,
   corden[, nvar + 1], denstor[, 1], denstor[, 2], denstor[, 3],
@@ -85,7 +103,7 @@ burke <- function(PSI) {
 }
 
 
-.test_burke <- function() {
+.test_burke1 <- function() {
   #Real data taken from the matlab example
   library(readxl)
   PSI <- read_excel('../PSI.xlsx',
@@ -97,6 +115,12 @@ burke <- function(PSI) {
 .test_burke2 <- function() {
   P1 <- readRDS(file = "p1_data.rds")
   ans <- burke(as.matrix(P1))
+  print(ans)
+}
+
+.test_burke3 <- function() {
+  P2 <- readRDS(file = "p2_data.rds")
+  ans <- burke(as.matrix(P2))
   print(ans)
 }
 
