@@ -20,7 +20,7 @@ library(DiceDesign)
 library(readxl)
 
 #this statement not needed on LAPKB machine
-#initPKSim("C:/Users/alona.kryshchenko/Dropbox (CSUCI)/For Alan/SummerGrant/Bupropion with R-Toolbox/PK-Sim 9.0.144")
+initPKSim("C:/Users/alona.kryshchenko/Dropbox (CSUCI)/For Alan/SummerGrant/Bupropion with R-Toolbox/PK-Sim 9.0.144")
 
 
 ### Load the individuals into a list of objects holding their individual characteristics

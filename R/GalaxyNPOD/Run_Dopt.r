@@ -1,5 +1,5 @@
 rm(list=ls())
-setwd("R/GalaxyNPOD")
+setwd("~/GitHub/NPOD/R/GalaxyNPOD")
 #source("initial_data.r")
 source("Dopt.R")
 source("PSI_2.r")
