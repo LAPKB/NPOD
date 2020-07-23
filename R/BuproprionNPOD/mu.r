@@ -52,8 +52,8 @@ mu <- function(theta, t, individual) {
   resultsData <- getOutputValues(simulationResults, quantitiesOrPaths = resultsPath)
   resultsTime <- resultsData$data$Time
   resultsValues <- resultsData$data$`Organism|PeripheralVenousBlood|Bupropion human 1st order|Plasma (Peripheral Venous Blood)`
-  ind = c(1:length(resultsValues))
-  return(resultsValues)
+  #ind = c(2:length(resultsValues))
+  return(resultsValues[2:length(resultsValues)])
 }
 
 # theta <- c(2, 0.5, 2, 1, 0.5)
