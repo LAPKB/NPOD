@@ -66,19 +66,21 @@ burke <- function(PSI) {
   # ihess <- 0 # flags Hessian error
   # isupres <- 1 # 0 to not suppress error writes, 1 to supress error writes
   # ijob <- 0 # do not condense
-  denstor <- matrix(c(seq(1, 20, 1)), nrow = ncol(PSI), ncol = 4)
-  nvar = nrow(PSI)
+  denstor <- matrix(c(seq(1, ncol(PSI) * 4, 1)), nrow = ncol(PSI), ncol = 4)
+  nvar <- nrow(PSI)
   nmaxsub <- nrow(PSI)
-  corden <- matrix(c(seq(1, ncol(PSI) * (nvar + 1), 1)), nrow = ncol(PSI), ncol = nvar + 1)
+  theta <- matrix(c(seq(1, ncol(PSI) * (nvar + 1), 1)), nrow = ncol(PSI), ncol = nvar + 1)
+  #corden <- matrix(c(seq(1, ncol(PSI) * (nvar + 1), 1)), nrow = ncol(PSI), ncol = nvar + 1)
   nmaxgrd <- 1024
   nactive <- ncol(PSI)
-  nsub <- ncol(PSI)
+  nsub <- nrow(PSI)
   ijob <- 0
-  corden[, nvar + 1] <- 0.2
+  #corden[, nvar + 1] <- 0.2
+  x <- c(rep(1 / ncol(PSI), ncol(PSI)))
   fobj <- 10 ^ -8
   gap <- 10 ^ -10
-  nvar <- nrow(PSI)
-  keep <- ncol(PSI)
+  nvar <- ncol(PSI) - 1
+  keep <- 0
   ihess <- 0
   isupress <- 1
 
@@ -97,8 +99,8 @@ burke <- function(PSI) {
   # keep <- ncol(PSI)
 
   #ipm(PSI, ldpsi, theta, ldtheta, npoint, nsub, ijob, x, dx, y, dy, fobj, gap, nvar, keep, ihess, isupres)
-  ipm(as.matrix(PSI), nmaxsub, corden, nmaxgrd, nactive, nsub, ijob,
-  corden[, nvar + 1], denstor[, 1], denstor[, 2], denstor[, 3],
+  ipm(as.matrix(PSI), nmaxsub, theta, nmaxgrd, nactive, nsub, ijob,
+  x, denstor[, 1], denstor[, 2], denstor[, 3],
   fobj, gap, nvar, keep, ihess, isupress)
 }
 
@@ -123,7 +125,7 @@ burke <- function(PSI) {
   ans <- burke(as.matrix(P2))
   print(ans)
 }
-
+# write.table(as.matrix(P1), file = "p1.csv", row.names=F, col.names=F, sep = ",")
 
 
 
