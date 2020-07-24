@@ -33,17 +33,17 @@ ipm <- function(psi, ldpsi, theta, ldtheta, npoint, nsub, ijob, x, dx, y, dy, fo
 
 burke <- function(PSI) {
   # PSI = pr( observation | support point )
-  nsub <- dim(PSI)[1]
-  npoint <- dim(PSI)[2]
+  nsub <- nrow(PSI)
+  npoint <- ncol(PSI)
 
   # theta has one support point and it's probability on
   # each row; theta is used only if ijob == 1
-  ldtheta <- 10 # dim(theta)[1]
-  nvar <- 5 # dim(theta)[2] - 1
-  theta <- matrix(c(seq(1, 60, 1)), nrow = 10, ncol = nvar + 1) #corden
+  ldtheta <- nrow(PSI)
+  nvar <- ncol(PSI) - 1
+  theta <- matrix(c(seq(1, ncol(PSI) * (nvar + 1), 1)), nrow = ncol(PSI), ncol = nvar + 1) #corden
 
   # working arrays -- must be npoint long
-  ldpsi = nsub #is passed to low level linear algebra routines
+  ldpsi = nrow(PSI) #is passed to low level linear algebra routines
   x <- c(rep(1 / npoint, npoint)) # These are the returned probabilities !!!
   dx <- c(rep(0, npoint))
   y <- c(rep(0, npoint))
@@ -68,6 +68,12 @@ burke <- function(PSI) {
   PSI <- read_excel('R/PSI.xlsx',
                   col_names = FALSE)
   ans <- burke(as.matrix(PSI))
+  print(ans)
+}
+
+.test_burke2 <- function() {
+  P1 <- readRDS(file = "../BuproprionNPOD/p1_data.rds")
+  burke(as.matrix(P1))
   print(ans)
 }
 
