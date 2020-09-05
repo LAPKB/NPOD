@@ -39,16 +39,37 @@ PSI_2 <- function(y, t, theta, sigma, individuals) {
   #     individuals[[i]] <- individual_chars
   #   }
 
+  library(bigstatsr)
+  
+
   N <- length(y)
   K <- length(theta[1,])
   psi <- matrix(0, N, K)
+  psi2 <-FBM(N, K)
 
-  for (i in 1:N) {
-    print(paste0("i:", i))
-    for (l in 1:K) {
-      print(paste0("l:", l))
-      psi[i, l] <- prob(y[[i]], t[[i]], theta[, l], sigma[[i]], individuals[[i]])
+  t1 <- system.time({
+    for (i in 1:N) {
+      print(paste0("i:", i))
+      for (l in 1:K) {
+        print(paste0("l:", l))
+        psi[i, l] <- prob(y[[i]], t[[i]], theta[, l], sigma[[i]], individuals[[i]])
+      }
     }
-  }
+  })
+
+  cl <- parallel::makeCluster(15)
+  doParallel::registerDoParallel(cl)
+  t2 <- system.time({
+    foreach(i = 1:N, .combine = 'c') %:% foreach(l = 1:K, .combine = 'c') %dopar% {
+      psi2[i, l] <- prob(y[[i]], t[[i]], theta[, l], sigma[[i]], individuals[[i]])
+      NULL
+    }
+  })
+  parallel::stopCluster(cl)
+
+  print(t1)
+  print(psi)
+  print(t2)
+  print(psi2)
   return(psi)
 }

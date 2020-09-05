@@ -1,4 +1,4 @@
-PSI_2 <- function(y, t=NULL, theta, sigma) {
+PSI_2 <- function(y, t = NULL, theta, sigma) {
 
   N <- length(y[, 1])
   K <- length(theta[1,])

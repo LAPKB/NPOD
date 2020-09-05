@@ -115,8 +115,8 @@ burke <- function(PSI) {
 }
 
 .test_burke2 <- function() {
-  P1 <- readRDS(file = "p1_data.rds")
-  ans <- burke(as.matrix(P1))
+  P1 <- readRDS(file = "p1_new_data.rds")
+  ans <- purrr::possibly(burke(as.matrix(P1)))
   print(ans)
 }
 
