@@ -72,7 +72,7 @@ burke <- function(PSI) {
 }
 
 .test_burke2 <- function() {
-  P1 <- readRDS(file = "../BuproprionNPOD/p1_data.rds")
+  P1 <- readRDS(file = "p1_data.rds")
   burke(as.matrix(P1))
   print(ans)
 }
