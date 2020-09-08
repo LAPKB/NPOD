@@ -136,5 +136,9 @@ multi_mu <- function(theta, t, individuals) {
     }
   })
 
+  #TODO:
+  #* Filter the non-needed concentrations (not all 't' are needed)
+  #* Extract the concentrations from the res list and create the m matrix needed in multi_prob
+
 }
 
