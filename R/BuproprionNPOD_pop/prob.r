@@ -22,6 +22,7 @@ prob <- function(y, t, theta, sigma, individual, m) {
 
 multi_prob <- function(y, t, theta, sigma, individuals) {
   m <- multi_mu(theta, t, individuals)
+  #Mu shouldn't be here
   N <- length(y)
   K <- length(theta[1,])
   prob <- matrix(0, N, K)
