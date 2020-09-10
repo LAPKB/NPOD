@@ -29,7 +29,7 @@ multi_prob <- function(y, t, theta, sigma, individuals) {
 
   for (i in 1:N) {
     for (l in 1:K) {
-      prob[i, l] <- prob(y = y[[i]], sigma = sigma[[i]], m = m[i, l])
+      prob[i, l] <- prob(y = y[[i]], sigma = sigma[[i]], m = m[[i, l]])
     }
   }
   prob

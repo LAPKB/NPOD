@@ -75,12 +75,12 @@ individuals <- individuals_old[as.logical(ind)]
 y <- y_old[as.logical(ind)]
 sigma <- sigma_old[as.logical(ind)]
 
-data <- c("POPDATA DEC_11\n", "#ID,EVID,TIME,DUR,DOSE,ADDL,II,INPUT,OUT\n")
-for (i in length(y)) {
-  for (j in length(y[[i]])) {
-    data <- append(data, paste0(i, ",0,", t[[i]][[j]], ",0,.,.,.,1,", y[[i]][[j]]))
-  }
-}
+# data <- c("POPDATA DEC_11\n", "#ID,EVID,TIME,DUR,DOSE,ADDL,II,INPUT,OUT\n")
+# for (i in length(y)) {
+#   for (j in length(y[[i]])) {
+#     data <- append(data, paste0(i, ",0,", t[[i]][[j]], ",0,.,.,.,1,", y[[i]][[j]]))
+#   }
+# }
 
 #ans <- initial_data(10)
 # y <- ans$y
