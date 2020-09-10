@@ -45,7 +45,8 @@ PSI_2 <- function(y, t, theta, sigma, individuals) {
   N <- length(y)
   K <- length(theta[1,])
   psi <- matrix(0, N, K)
-  psi2 <- FBM(N, K)
+  psi2 <- matrix(0, N, K)
+  # psi2 <- FBM(N, K)
 
   t1 <- system.time({
     for (i in 1:N) {
@@ -57,17 +58,21 @@ PSI_2 <- function(y, t, theta, sigma, individuals) {
     }
   })
 
-
-
-  cl <- parallel::makeCluster(15)
-  doParallel::registerDoParallel(cl)
   t2 <- system.time({
-    foreach(i = 1:N, .combine = 'c') %:% foreach(l = 1:K, .combine = 'c') %dopar% {
-      psi2[i, l] <- prob(y[[i]], t[[i]], theta[, l], sigma[[i]], individuals[[i]])
-      NULL
-    }
+    psi2 <- multi_prob(y, t, theta, sigma, individuals)
   })
-  parallel::stopCluster(cl)
+
+
+
+  # cl <- parallel::makeCluster(15)
+  # doParallel::registerDoParallel(cl)
+  # t2 <- system.time({
+  #   foreach(i = 1:N, .combine = 'c') %:% foreach(l = 1:K, .combine = 'c') %dopar% {
+  #     psi2[i, l] <- prob(y[[i]], t[[i]], theta[, l], sigma[[i]], individuals[[i]])
+  #     NULL
+  #   }
+  # })
+  # parallel::stopCluster(cl)
 
   print(t1)
   print(psi)

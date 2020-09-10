@@ -115,7 +115,7 @@ multi_mu <- function(theta, t, individuals) {
   sim$outputSchema$clear() #first clear default
   sim$outputSchema$addTimePoints(unlist(t)) #add times
 
-  res <- c()
+  m <- matrix(rep(list(), 330), nrow = 33, ncol = 10)
   t1 <- system.time({
     for (k in 1:length(theta[1, ])) {
       #this line sets the ith theta[1] to all the subjects in the population
@@ -125,7 +125,18 @@ multi_mu <- function(theta, t, individuals) {
       old_diss_prof <- .scale_dissolution_profile(sim, c(theta[2, k], theta[3, k]))
 
       # Run the simulation
-      res[[k]] <- runSimulation(simulation = sim, population = population)
+      res <- runSimulation(simulation = sim, population = population)
+
+      #Extract the results
+      resPath <- res$allQuantityPaths[[1]]
+      resData <- getOutputValues(res, quantitiesOrPaths = resPath)
+
+      for (sub in resData$data$IndividualId) {
+        # Return format m[i,l] where i->1..Nsub and l->1..size(theta)
+        #TODO:
+        #* Filter the non-needed concentrations (not all 't' are needed)
+        m[[sub, k]] <- resData$data[resData$data[1] == sub & resData$data[resData$data[2] %in% t[[sub]]]][-(1:28)]
+      }
 
       # Restore the dissolution profile
       # TODO: improve this
@@ -136,9 +147,6 @@ multi_mu <- function(theta, t, individuals) {
     }
   })
 
-  #TODO:
-  #* Filter the non-needed concentrations (not all 't' are needed)
-  #* Extract the concentrations from the res list and create the m matrix needed in multi_prob
-
+  return(m)
 }
 
