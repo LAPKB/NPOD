@@ -20,7 +20,7 @@ library(DiceDesign)
 library(readxl)
 
 #this statement not needed on LAPKB machine
-initPKSim("C:/Users/alona.kryshchenko/Dropbox (CSUCI)/For Alan/SummerGrant/Bupropion with R-Toolbox/PK-Sim 9.0.144")
+# initPKSim("C:/Users/alona.kryshchenko/Dropbox (CSUCI)/For Alan/SummerGrant/Bupropion with R-Toolbox/PK-Sim 9.0.144")
 
 
 ### Load the individuals into a list of objects holding their individual characteristics
@@ -69,12 +69,41 @@ for (i in 1:number_of_individuals) {
 }
 
 ind <- c(0)
-for (i in 1:33) { ind[i] = length(y_old[[i]]) != 0 }
+for (i in 1:32) { ind[i] = length(y_old[[i]]) != 0 }
+#TODO: 32 should not be hardcoded
 t <- time[as.logical(ind)]
 individuals <- individuals_old[as.logical(ind)]
 y <- y_old[as.logical(ind)]
 sigma <- sigma_old[as.logical(ind)]
 
+characteristics <- individuals
+
+indiv <- c()
+#transform all the ind char to ind (createIndividual)
+for (i in 1:length(characteristics)) {
+  indiv[[i]] <- createIndividual(characteristics[[i]])
+}
+
+#Create population.csv
+col.names <- indiv[[1]]$distributedParameters$paths
+df <- as.data.frame(t(list(indiv[[1]]$distributedParameters$values)[[1]]))
+colnames(df) <- col.names
+for (ind in indiv[-(1:1)]) {
+  aux <- as.data.frame(t(list(ind$distributedParameters$values)[[1]]))
+  colnames(aux) <- col.names
+  df <- rbind(df, aux)
+}
+write.csv(df, "test.csv")
+
+#TODO: fix this
+#SUPER HACKY FIX
+
+con <- file("test.csv", "r")
+con2 <- file("pop.csv")
+lines <- readLines(con)
+header <- paste(c("\"IndividualId\"", strsplit(lines[1], ",")[[1]][-(1:1)]), collapse = ",")
+
+writeLines(c(header, lines[-(1:1)]), con2)
 # data <- c("POPDATA DEC_11\n", "#ID,EVID,TIME,DUR,DOSE,ADDL,II,INPUT,OUT\n")
 # for (i in length(y)) {
 #   for (j in length(y[[i]])) {

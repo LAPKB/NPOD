@@ -4,9 +4,9 @@ Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma, a, b, individuals) {
   count <- 1
   F0 <- -10 ^ (30)
   F1 <- 2 * F0
-  
-  ind1<-c(0)
-  ind2<-c(0)
+
+  ind1 <- c(0)
+  ind2 <- c(0)
 
   options <- optimset(MaxFunEvals = 2000000000, TolX = 1e-14, MaxIter = 5, TolFun = 1e-14)
   #  old_F <-c()
@@ -26,12 +26,12 @@ Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma, a, b, individuals) {
     ind1 <- (lam1 > 0.00000001) & (lam1 > (max(lam1) / 1000))
     inb_theta <- matrix(old_theta[, ind1], nrow = nrow(old_theta), ncol = ncol(old_theta[, ind1]))
     #print(inb_theta)
-    
-    lambda<-c()
-    fobj<-c()
+
+    lambda <- c()
+    fobj <- c()
 
     P2 <- PSI_2(y, t, inb_theta, sigma, individuals)
-    ans2<-c()
+    ans2 <- c()
     ans2 <- burke(P2)
 
     #updating of F1

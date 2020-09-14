@@ -42,6 +42,15 @@ mu <- function(theta, t, individual) {
 
   set_Sim_Times(sim, t)
 
+  # ## Load individual
+  # individual <- createIndividual(individual)
+
+  # ## Apply the distributed parameters of the individual to the simulation
+  # setParameterValuesByPath(individual$distributedParameters$paths,
+  #                                individual$distributedParameters$values,
+  #                                simulation = sim)
+
+  # simulationResults <- runSimulation(simulation = sim)
   simulationResults <- apply_and_simulate(simulation = sim,
                                             individual_chars = individual,
                                             scaling_factors = scaling_factors,
@@ -108,21 +117,24 @@ multi_mu <- function(theta, t, individuals) {
 
 
   sim <- loadSimulation("PO SR 150 mg bupropion to human - Connarn et al 2017 - table - June 2.pkml")
-  population <- loadPopulation("population.csv")
+  population <- loadPopulation("pop.csv")
   pop_size <- length(population$allIndividualIds)
 
   #Set the times
   sim$outputSchema$clear() #first clear default
   sim$outputSchema$addTimePoints(unlist(t)) #add times
 
-  m <- matrix(rep(list(), 330), nrow = 33, ncol = 10)
+  m <- matrix(rep(list(), pop_size * length(theta[1,])), nrow = pop_size, ncol = length(theta[1,]))
   t1 <- system.time({
     for (k in 1:length(theta[1, ])) {
-      #this line sets the ith theta[1] to all the subjects in the population
-      population$setParameterValues("Liver and Intestinal CL|Reference concentration", rep(theta[1, k], pop_size))
+      #this line sets the ith theta[3] to all the subjects in the population
+      # population$setParameterValues("Liver and Intestinal CL|Reference concentration", rep(theta[3, k], pop_size))
+      setParameterValuesByPath('Liver and Intestinal CL|Reference concentration',
+                                 theta[3, k],
+                                 simulation = sim)
 
-      # This line scales the dissolution profile inside the model using the two scaling factors
-      old_diss_prof <- .scale_dissolution_profile(sim, c(theta[2, k], theta[3, k]))
+      # # This line scales the dissolution profile inside the model using the two scaling factors
+      .scale_dissolution_profile(sim, c(theta[1, k], theta[2, k]))
 
       # Run the simulation
       res <- runSimulation(simulation = sim, population = population)
@@ -133,9 +145,8 @@ multi_mu <- function(theta, t, individuals) {
 
       for (sub in resData$data$IndividualId) {
         # Return format m[i,l] where i->1..Nsub and l->1..size(theta)
-        #TODO:
-        #* Filter the non-needed concentrations (not all 't' are needed)
-        m[[sub, k]] <- resData$data[resData$data[1] == sub & resData$data[resData$data[2] %in% t[[sub]]]][-(1:28)]
+        # Filter the non-needed concentrations (not all 't' are needed)
+        m[[sub, k]] <- resData$data[resData$data[1] == sub][-(1:28)][resData$data[resData$data[1] == sub][(15:28)] %in% t[[sub]]]
       }
 
       # Restore the dissolution profile
