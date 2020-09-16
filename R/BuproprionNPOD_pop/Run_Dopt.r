@@ -58,7 +58,7 @@ for (i in 1:number_of_individuals) {
   individuals_old[[i]] <- individual_chars
 }
 
-Bupropion150PKdata <- read.csv("Bupropion150PKdata.csv")
+Bupropion150PKdata <- read.csv("Bupropion150PKdata_fixed.csv")
 time <- vector(mode = "list", length = number_of_individuals)
 y_old <- vector(mode = "list", length = number_of_individuals)
 sigma_old <- vector(mode = 'list', length = number_of_individuals)
@@ -93,17 +93,10 @@ for (ind in indiv[-(1:1)]) {
   colnames(aux) <- col.names
   df <- rbind(df, aux)
 }
-write.csv(df, "test.csv")
+ids <- data.frame(IndividualId = as.character(1:nrow(df)))
+df <- cbind(ids, df)
+write.csv(df, "test.csv", row.names = F)
 
-#TODO: fix this
-#SUPER HACKY FIX
-
-con <- file("test.csv", "r")
-con2 <- file("pop.csv")
-lines <- readLines(con)
-header <- paste(c("\"IndividualId\"", strsplit(lines[1], ",")[[1]][-(1:1)]), collapse = ",")
-
-writeLines(c(header, lines[-(1:1)]), con2)
 # data <- c("POPDATA DEC_11\n", "#ID,EVID,TIME,DUR,DOSE,ADDL,II,INPUT,OUT\n")
 # for (i in length(y)) {
 #   for (j in length(y[[i]])) {

@@ -117,7 +117,7 @@ multi_mu <- function(theta, t, individuals) {
 
 
   sim <- loadSimulation("PO SR 150 mg bupropion to human - Connarn et al 2017 - table - June 2.pkml")
-  population <- loadPopulation("pop.csv")
+  population <- loadPopulation("test.csv")
   pop_size <- length(population$allIndividualIds)
 
   #Set the times
@@ -128,7 +128,7 @@ multi_mu <- function(theta, t, individuals) {
   t1 <- system.time({
     for (k in 1:length(theta[1, ])) {
       #this line sets the ith theta[3] to all the subjects in the population
-      # population$setParameterValues("Liver and Intestinal CL|Reference concentration", rep(theta[3, k], pop_size))
+      #population$setParameterValues("Liver and Intestinal CL|Reference concentration", rep(theta[3, k], pop_size))
       setParameterValuesByPath('Liver and Intestinal CL|Reference concentration',
                                  theta[3, k],
                                  simulation = sim)

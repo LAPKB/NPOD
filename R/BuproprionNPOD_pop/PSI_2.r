@@ -48,15 +48,15 @@ PSI_2 <- function(y, t, theta, sigma, individuals) {
   psi2 <- matrix(0, N, K)
   # psi2 <- FBM(N, K)
 
-  t1 <- system.time({
-    for (i in 1:N) {
-      print(paste0("i:", i))
-      for (l in 1:K) {
-        print(paste0("l:", l))
-        psi[i, l] <- prob(y[[i]], t[[i]], theta[, l], sigma[[i]], individuals[[i]])
-      }
-    }
-  })
+  # t1 <- system.time({
+  #   for (i in 1:N) {
+  #     print(paste0("i:", i))
+  #     for (l in 1:K) {
+  #       print(paste0("l:", l))
+  #       psi[i, l] <- prob(y[[i]], t[[i]], theta[, l], sigma[[i]], individuals[[i]])
+  #     }
+  #   }
+  # })
 
   t2 <- system.time({
     psi2 <- multi_prob(y, t, theta, sigma, individuals)
@@ -74,9 +74,9 @@ PSI_2 <- function(y, t, theta, sigma, individuals) {
   # })
   # parallel::stopCluster(cl)
 
-  print(t1)
-  print(psi)
-  print(t2)
-  print(psi2)
-  return(psi)
+  # print(t1)
+  # print(psi)
+  # print(t2)
+  # print(psi2)
+  return(psi2)
 }
