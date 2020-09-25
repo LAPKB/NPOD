@@ -1,8 +1,6 @@
 prob <- function(y, t, theta, sigma, individual, m) {
   #TODO: remove t, theta and individual from this function, those values are only used to calculate
   # mu, instead of that we just need to receive mu
-  print("prob")
-
   j <- length(y)
   z <- matrix(0, 1, j)
   if (missing(m)) {

@@ -58,14 +58,14 @@ for (i in 1:number_of_individuals) {
   individuals_old[[i]] <- individual_chars
 }
 
-Bupropion150PKdata <- read.csv("Bupropion150PKdata_fixed.csv")
+Bupropion150PKdata <- read.csv("bupdata.csv")
 time <- vector(mode = "list", length = number_of_individuals)
 y_old <- vector(mode = "list", length = number_of_individuals)
 sigma_old <- vector(mode = 'list', length = number_of_individuals)
 for (i in 1:number_of_individuals) {
   time[[i]] <- Bupropion150PKdata[, 1][Bupropion150PKdata[, i + 1] != 999] * 60
   y_old[[i]] <- Bupropion150PKdata[, i + 1][Bupropion150PKdata[, i + 1] != 999]
-  sigma_old[[i]] <- 0.5 * 1.65 + 0.1 * y_old[[i]]
+  sigma_old[[i]] <- 100 #(0.5 * 1.65 + 0.1 * y_old[[i]]) * 0.0000000000000000001
 }
 
 ind <- c(0)
@@ -112,13 +112,31 @@ write.csv(df, "test.csv", row.names = F)
 
 
 #true_theta <- ans$true_theta
-a <- c(0.01, 0.01, 0.01)
-b <- c(100, 1.1, 100)
+a <- c(0.4, 180, 0.9)
+b <- c(0.6, 220, 1)
+
+a <- c(0.5, 150, 0.5)
+b <- c(2, 400, 2)
 
 theta_0 <- a + t(runif.faure(10, 3)$design) * (b - a)
 
 theta_F <- 10e-2
 theta_d <- 10e-4
+
+m <- multi_mu(theta_0, t, individuals)
+psi <- multi_prob(y, t, theta_0, sigma, individuals)
+error <- c()
+for (i in 1:number_of_individuals) {
+
+  sub <- c()
+  for (j in 1:length(theta[1, ])) {
+    sub <- append(sub, (m[[i, j]] - y[[i]]) ^ 2)
+  }
+  error[[i]] <- max(sub)
+}
+
+
+
 
 ans <- Dopt(y, t, theta_0, theta_F, theta_d, sigma, a, b, individuals)
 
