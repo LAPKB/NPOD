@@ -1,7 +1,7 @@
-source("prob.r")
-
 D <- function(theta_parameter, y, t, sigma, PYL, individuals) {
-  
+
+  print("IN D")
+
   # ### Load the individuals into a list of objects holding their individual characteristics
   # population_data <- read_csv("bupropion baseline demographics - to share - converted to metric units.csv")
   # 
@@ -37,11 +37,23 @@ D <- function(theta_parameter, y, t, sigma, PYL, individuals) {
   #   individuals[[i]] <- individual_chars
   # }
   # 
-  N <- length(y[, 1])
+  # N <- length(y[, 1])
+  N <- length(y)
   D_components = -N
 
   for (i in 1:N) {
+    print(i)
     D_components <- D_components + prob(y[[i]], t[[i]], theta_parameter, sigma[[i]], individuals[[i]]) / PYL[i]
   }
   return(D_components)
+}
+
+multi_D <- function(theta_parameter, y, t, sigma, PYL, individuals) {
+  print(sprintf("Multi_D: theta: %f", theta_parameter))
+
+  N <- length(y) # nsub
+  D_comp = -N
+  D_comp <- D_comp + sum(multi_prob(y, t, theta_parameter, sigma, individuals) / PYL)
+  return(D_comp)
+
 }

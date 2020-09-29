@@ -1,7 +1,7 @@
 source("prob.r")
 
 D <- function(theta_parameter, y, t, sigma, PYL, individuals) {
-  
+
   # ### Load the individuals into a list of objects holding their individual characteristics
   # population_data <- read_csv("bupropion baseline demographics - to share - converted to metric units.csv")
   # 

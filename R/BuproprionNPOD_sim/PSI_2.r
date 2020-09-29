@@ -43,9 +43,12 @@ PSI_2 <- function(y, t, theta, sigma, individuals) {
 
 
   N <- length(y)
-  K <- length(theta[1,])
+  K <- tryCatch({
+    value <- length(theta[1,])
+  }, error = function(e) {
+    length(theta)
+  })
   psi <- matrix(0, N, K)
-  psi2 <- matrix(0, N, K)
   # psi2 <- FBM(N, K)
 
   # t1 <- system.time({
@@ -58,9 +61,9 @@ PSI_2 <- function(y, t, theta, sigma, individuals) {
   #   }
   # })
 
-  t2 <- system.time({
-    psi2 <- multi_prob(y, t, theta, sigma, individuals)
-  })
+  # t2 <- system.time({
+  psi <- multi_prob(y, t, theta, sigma, individuals)
+  # })
 
 
 
@@ -78,5 +81,5 @@ PSI_2 <- function(y, t, theta, sigma, individuals) {
   # print(psi)
   # print(t2)
   # print(psi2)
-  return(psi2)
+  return(psi)
 }

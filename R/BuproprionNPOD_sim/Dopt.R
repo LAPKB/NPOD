@@ -24,7 +24,8 @@ Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma, a, b, individuals) {
     ans1 <- burke(P1)
     lam1 <- ans1$lambda
     ind1 <- (lam1 > 0.00000001) & (lam1 > (max(lam1) / 1000))
-    inb_theta <- matrix(old_theta[, ind1], nrow = nrow(old_theta), ncol = ncol(old_theta[, ind1]))
+    #inb_theta <- matrix(old_theta[, ind1], nrow = nrow(old_theta), ncol = ncol(old_theta[, ind1]))
+    inb_theta <- matrix(old_theta[ind1])
     #print(inb_theta)
 
     lambda <- c()
@@ -40,7 +41,7 @@ Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma, a, b, individuals) {
 
     ind2 <- (lam2 > (max(lam2) / 1000))
     new_w <- lam2[ind2] / sum(lam2[ind2])
-    new_theta <- matrix(inb_theta[, ind2], nrow = nrow(inb_theta), ncol = ncol(inb_theta[, ind2]))
+    new_theta <- matrix(inb_theta[ind2])
     print(new_theta)
 
 
@@ -52,9 +53,10 @@ Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma, a, b, individuals) {
     pyl <- P2 %*% new_w
 
     for (l in 1:K) {
-      Dtheta <- function(.theta) { D(.theta, y, t, sigma, pyl, individuals) }
-      fun <- function(.theta_parameter) {-1 * Dtheta(.theta_parameter) }
-      cand_theta <- fminsearch(fun, new_theta[, l], options)
+      #Dtheta <- function(.theta) { D(.theta, y, t, sigma, pyl, individuals) }
+      multi_Dtheta <- function(.theta) {-1 * multi_D(.theta, y, t, sigma, pyl, individuals) }
+      # fun <- function(.theta_parameter) {-1 * Dtheta(.theta_parameter) }
+      cand_theta <- fminsearch(multi_Dtheta, new_theta[, l], options)
       print(cand_theta)
 
       new_theta <- prune(new_theta, cand_theta$optbase$xopt, theta_d, a, b)
@@ -64,7 +66,9 @@ Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma, a, b, individuals) {
     old_theta <- new_theta
 
     count <- count + 1
+    print("Counter: ")
+    print(count)
   }
 
-  return(list("count" = count, "theta" = new_theta, "w" = new_w, "LogLikelihood" = new_F[length(new_F)]))
+  return(list("count" = count, "theta" = new_theta, "w" = new_w, "LogLikelihood" = new_F))
 }

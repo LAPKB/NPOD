@@ -7,7 +7,7 @@ source("D.r")
 source("burke.R")
 source("prune.r")
 source("mu.r")
-
+source("prob.r")
 
 
 library(ospsuite) # PK-Sim R toolbox
@@ -119,15 +119,17 @@ a <- c(0.9)
 b <- c(1.1)
 
 theta_0 <- a + t(runif.faure(10, 2)$design) * (b - a)
-theta <- theta_0[1,]
+theta_0 <- theta_0[1,]
 
 theta_F <- 10e-2
 theta_d <- 10e-4
 
-####### TEST BLOCK #######
-m <- multi_mu(theta, t, individuals)
-psi <- multi_prob(y, t, theta, sigma, individuals, m)
-ans <- burke(psi)
+####### TEST BLOCK ####### REMOVE BEFORE RUNNING
+# t1 <- system.time({
+#   m <- multi_mu(theta, t, individuals)
+# })
+# psi <- multi_prob(y, t, theta, sigma, individuals, m)
+# ans <- burke(psi)
 ##### END TEST BLOCK #####
 # error <- c()
 # for (i in 1:number_of_individuals) {
@@ -142,7 +144,7 @@ ans <- burke(psi)
 
 
 
-ans <- Dopt(y, t, theta, theta_F, theta_d, sigma, a, b, individuals)
+ans <- Dopt(y, t, theta_0, theta_F, theta_d, sigma, a, b, individuals)
 
 count <- ans$count
 theta <- ans$theta
