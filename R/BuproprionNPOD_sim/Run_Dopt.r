@@ -115,8 +115,8 @@ write.csv(df, "test.csv", row.names = F)
 # a <- c(0.4, 180, 0.9)
 # b <- c(0.6, 220, 1)
 
-a <- c(0.9)
-b <- c(1.1)
+a <- c(0.01)
+b <- c(0.8)
 
 theta_0 <- a + t(runif.faure(10, 2)$design) * (b - a)
 theta_0 <- theta_0[1,]
@@ -125,11 +125,19 @@ theta_F <- 10e-2
 theta_d <- 10e-4
 
 ####### TEST BLOCK ####### REMOVE BEFORE RUNNING
-# t1 <- system.time({
-#   m <- multi_mu(theta, t, individuals)
-# })
+t1 <- system.time({
+  m <- multi_mu(0.0178125, t, individuals)
+})
 # psi <- multi_prob(y, t, theta, sigma, individuals, m)
 # ans <- burke(psi)
+
+plot(t[[1]], m[[1, 1]], col = "red")
+for (l in 1:length(y)) {
+  lines(t[[l]], y[[l]])
+  points(t[[l]], y[[l]])
+  lines(t[[l]], m[[l, 1]], col = "green")
+  points(t[[l]], m[[l, 1]], col = "green")
+}
 ##### END TEST BLOCK #####
 # error <- c()
 # for (i in 1:number_of_individuals) {

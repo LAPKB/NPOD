@@ -125,9 +125,9 @@ multi_mu <- function(theta, t, individuals) {
   lines = read_lines(file("test.csv"))
   lines = c(lines[1], rep(lines[-1], length(theta)))
   write_lines(lines, "population.csv")
-  pop <- read.csv("population.csv")
-  pop$IndividualId <- as.character((1:(length(lines) - 1)))
-  write.csv(pop, "population.csv")
+  # pop <- read.csv("population.csv")
+  # pop$IndividualId <- as.character((1:(length(lines) - 1)))
+  # write.csv(pop, "population.csv")
 
 
   population <- loadPopulation("population.csv")
