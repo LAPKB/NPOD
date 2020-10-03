@@ -19,6 +19,7 @@ prob <- function(y, t, theta, sigma, individual, m) {
     print(y)
     print(m)
     print("----")
+    stop()
   }
   z <- (y - m) ^ 2
   pr <- rep(0, j)
