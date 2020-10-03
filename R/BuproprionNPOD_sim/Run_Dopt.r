@@ -19,12 +19,32 @@ library(neldermead)
 library(DiceDesign)
 library(readxl)
 
+## PARAMETER DEFINITION ##
+
+sim_param <- F
+
+# population_file <<- "bupropion baseline demographics - to share - converted to metric units.csv"
+# pkdata_file <<- "Bupropion150PKdata.csv"
+# sim_file <<- "PO SR 150 mg bupropion to human - Connarn et al 2017 - table - June 2.pkml"
+
+population_file <<- "Normal_cleareance_pop.csv"
+pkdata_file <<- "data.csv"
+sim_file <<- "sim.pkml"
+
+# param_min <<- c(0.1, 150, 0.1)
+# param_max <<- c(10, 300, 10)
+
+param_min <- c(0.1)
+param_max <- c(10)
+
+## END PARAMETER DEFINITION ##
+
 #this statement not needed on LAPKB machine
 # initPKSim("C:/Users/alona.kryshchenko/Dropbox (CSUCI)/For Alan/SummerGrant/Bupropion with R-Toolbox/PK-Sim 9.0.144")
 
 
 ### Load the individuals into a list of objects holding their individual characteristics
-population_data <- read_csv("Normal_cleareance_pop.csv")
+population_data <- read_csv(population_file)
 
 # Convert population_data into IndividualCharacteristics objects used in PK-Sim simulation
 # Initialize list of individuals
@@ -58,7 +78,7 @@ for (i in 1:number_of_individuals) {
   individuals_old[[i]] <- individual_chars
 }
 
-pkdata <- read.csv("data.csv")
+pkdata <- read.csv(pkdata_file)
 time <- vector(mode = "list", length = number_of_individuals)
 y_old <- vector(mode = "list", length = number_of_individuals)
 sigma_old <- vector(mode = 'list', length = number_of_individuals)
@@ -115,23 +135,28 @@ write.csv(df, "test.csv", row.names = F)
 # a <- c(0.4, 180, 0.9)
 # b <- c(0.6, 220, 1)
 
-a <- c(0.01)
-b <- c(0.8)
+a <- param_min
+b <- param_max
 
-theta_0 <- a + t(runif.faure(10, 2)$design) * (b - a)
-theta_0 <- theta_0[1,]
+if (length(a) == 1) {
+  theta_0 <- a + t(runif.faure(10, 2)$design) * (b - a)
+  theta_0 <- matrix(theta_0[1,], ncol = length(theta_0[1,]))
+} else {
+  theta_0 <- a + t(runif.faure(10, length(a))$design) * (b - a)
+}
+theta_0
 
 theta_F <- 10e-2
 theta_d <- 10e-4
 
 ####### TEST BLOCK ####### REMOVE BEFORE RUNNING
 t1 <- system.time({
-  m <- multi_mu(0.0178125, t, individuals)
+  m <- multi_mu(theta_0, t, individuals)
 })
 # psi <- multi_prob(y, t, theta, sigma, individuals, m)
 # ans <- burke(psi)
 
-plot(t[[1]], m[[1, 1]], col = "red")
+plot(t[[1]], m[[1, 8]], col = "red")
 for (l in 1:length(y)) {
   lines(t[[l]], y[[l]])
   points(t[[l]], y[[l]])

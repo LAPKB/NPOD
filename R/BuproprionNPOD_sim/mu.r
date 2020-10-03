@@ -117,14 +117,25 @@ multi_mu <- function(theta, t, individuals) {
   #Where K <- length(theta[1,])
 
 
-  sim <- loadSimulation("sim.pkml")
+  sim <- loadSimulation(sim_file)
 
   #If we know that all the parameters belongs to the population
   #We can just replicate the population and do one big simulation.
 
+  .rep_population <- function(lines, times) {
+    row <- c(lines[1], rep(lines[-1], times))
+    res <- c(lines[1])
+    for (i in 1:(length(lines[-1]) * times)) {
+      res <- c(res, toString(c(sprintf('"%i"', i), strsplit(row[(i + 1)], ",")[[1]][-1])))
+    }
+    print(length(res))
+    return(res)
+  }
+
   lines = read_lines(file("test.csv"))
-  lines = c(lines[1], rep(lines[-1], length(theta)))
+  lines = .rep_population(lines, length(theta))
   write_lines(lines, "population.csv")
+
   # pop <- read.csv("population.csv")
   # pop$IndividualId <- as.character((1:(length(lines) - 1)))
   # write.csv(pop, "population.csv")
@@ -136,47 +147,82 @@ multi_mu <- function(theta, t, individuals) {
 
   #Set the times
   sim$outputSchema$clear() #first clear default
-  sim$outputSchema$addTimePoints(unlist(t)) #add times
+  sim$outputSchema$addTimePoints(unlist(unique(t)[[1]])) #add times
 
   m <- matrix(rep(list(), pop_size), nrow = 100, ncol = length(theta))
-  t1 <- system.time({
-    # for (k in 1:length(theta)) {
-    pop_theta = c()
-    for (i in 1:length(theta)) {
-      pop_theta <- append(pop_theta, rep(theta[i], 100))
-    }
-    #this line sets the ith theta[3] to all the subjects in the population
-    population$setParameterValues("Liver Enzyme|Reference concentration", pop_theta)
-    # setParameterValuesByPath('Liver Enzyme|Reference concentration',
-    #                              theta[k],
-    #                              simulation = sim)
+  if (sim_param) {
+    t1 <- system.time({
+      for (k in 1:length(theta[1, ])) {
+        #this line sets the ith theta[3] to all the subjects in the population
+        #population$setParameterValues("Liver and Intestinal CL|Reference concentration", rep(theta[3, k], pop_size))
+        setParameterValuesByPath('Liver and Intestinal CL|Reference concentration',
+                                 theta[3, k],
+                                 simulation = sim)
 
-    # # This line scales the dissolution profile inside the model using the two scaling factors
-    # .scale_dissolution_profile(sim, c(theta[1, k], theta[2, k]))
+        # # This line scales the dissolution profile inside the model using the two scaling factors
+        .scale_dissolution_profile(sim, c(theta[1, k], theta[2, k]))
 
-    # Run the simulation
-    res <- runSimulation(simulation = sim, population = population)
+        # Run the simulation
+        res <- runSimulation(simulation = sim, population = population)
 
-    #Extract the results
-    resPath <- res$allQuantityPaths[[1]]
-    resData <- getOutputValues(res, quantitiesOrPaths = resPath)
+        #Extract the results
+        resPath <- res$allQuantityPaths[[1]]
+        resData <- getOutputValues(res, quantitiesOrPaths = resPath)
 
-    for (sub in 1:(100 * length(theta))) {
-      # Return format m[i,l] where i->1..Nsub and l->1..size(theta)
-      # Filter the non-needed concentrations (not all 't' are needed)
-      j <- ((sub - 1) %% 100) + 1
-      k <- ((sub - 1) %/% 100) + 1
-      m[[j, k]] <- resData$data[resData$data[1] == sub][-(1:22)] #[resData$data[resData$data[1] == sub][(12:22)] %in% t[[sub]]]
-    }
+        for (sub in resData$data$IndividualId) {
+          # Return format m[i,l] where i->1..Nsub and l->1..size(theta)
+          # Filter the non-needed concentrations (not all 't' are needed)
+          m[[sub, k]] <- resData$data[resData$data[1] == sub][-(1:28)][resData$data[resData$data[1] == sub][(15:28)] %in% t[[sub]]]
+        }
 
-    # Restore the dissolution profile
-    # TODO: improve this
-    # sim <- loadSimulation("sim.pkml")
-    # sim$outputSchema$clear() #first clear default
-    # sim$outputSchema$addTimePoints(unlist(t)) #add times
+        # Restore the dissolution profile
+        # TODO: improve this
+        sim <- loadSimulation("PO SR 150 mg bupropion to human - Connarn et al 2017 - table - June 2.pkml")
+        sim$outputSchema$clear() #first clear default
+        sim$outputSchema$addTimePoints(unlist(t)) #add times
 
-    # }
-  })
+      }
+    })
+  } else {
+    t1 <- system.time({
+      # for (k in 1:length(theta)) {
+      pop_theta = c()
+      for (i in 1:length(theta)) {
+        pop_theta <- append(pop_theta, rep(theta[i], 100))
+      }
+      #this line sets the ith theta[3] to all the subjects in the population
+      population$setParameterValues("Liver Enzyme|Reference concentration", pop_theta)
+      # setParameterValuesByPath('Liver Enzyme|Reference concentration',
+      #                              theta[k],
+      #                              simulation = sim)
+
+      # # This line scales the dissolution profile inside the model using the two scaling factors
+      # .scale_dissolution_profile(sim, c(theta[1, k], theta[2, k]))
+
+      # Run the simulation
+      res <- runSimulation(simulation = sim, population = population)
+
+      #Extract the results
+      resPath <- res$allQuantityPaths[[1]]
+      resData <- getOutputValues(res, quantitiesOrPaths = resPath)
+
+      for (sub in 1:(100 * length(theta))) {
+        # Return format m[i,l] where i->1..Nsub and l->1..size(theta)
+        # Filter the non-needed concentrations (not all 't' are needed)
+        j <- ((sub - 1) %% 100) + 1
+        k <- ((sub - 1) %/% 100) + 1
+        m[[j, k]] <- resData$data[resData$data[1] == sub][-(1:22)] #[resData$data[resData$data[1] == sub][(12:22)] %in% t[[sub]]]
+      }
+
+      # Restore the dissolution profile
+      # TODO: improve this
+      # sim <- loadSimulation("sim.pkml")
+      # sim$outputSchema$clear() #first clear default
+      # sim$outputSchema$addTimePoints(unlist(t)) #add times
+
+      # }
+    })
+  }
 
   return(m)
 }
