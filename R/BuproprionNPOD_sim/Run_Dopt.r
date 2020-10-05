@@ -22,15 +22,17 @@ library(readxl)
 #this statement not needed on LAPKB machine
 # initPKSim("C:/Users/alona.kryshchenko/Dropbox (CSUCI)/For Alan/SummerGrant/Bupropion with R-Toolbox/PK-Sim 9.0.144")
 
-run_dopt <- function(sim_file, pkdata_file, params, sim_param, individuals_old) {
+run_dopt <- function(sim_file, pkdata_file, params, individuals_old, population_functions, simulation_functions) {
 
   #TODO: WIP global variables.
   sim_file <<- sim_file
-  # pop_file <<- pop_file # maybe we don't need this one.
   pkdata_file <<- pkdata_file
   params <- params
-  sim_param <<- sim_param # I think we don't need this one
+  sim_param <<- length(simulation_functions) > 0 # I think we don't need this one
   individuals_old <<- individuals_old
+  simulation_functions <<- simulation_functions
+  population_functions <<- population_functions
+
 
   ### Load the individuals into a list of objects holding their individual characteristics
   # population_data <- read_csv(pop_file)

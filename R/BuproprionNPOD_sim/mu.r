@@ -133,7 +133,7 @@ multi_mu <- function(theta, t, individuals) {
   }
 
   lines = read_lines(file("test.csv"))
-  lines = .rep_population(lines, length(theta))
+  lines = .rep_population(lines, length(theta[1,]))
   write_lines(lines, "population.csv")
 
   # pop <- read.csv("population.csv")
@@ -149,15 +149,18 @@ multi_mu <- function(theta, t, individuals) {
   sim$outputSchema$clear() #first clear default
   sim$outputSchema$addTimePoints(unlist(unique(t)[[1]])) #add times
 
-  m <- matrix(rep(list(), pop_size), nrow = 100, ncol = length(theta))
+  m <- matrix(rep(list(), pop_size), nrow = 100, ncol = length(theta[1,]))
   if (sim_param) {
     t1 <- system.time({
       for (k in 1:length(theta[1, ])) {
         #this line sets the ith theta[3] to all the subjects in the population
         #population$setParameterValues("Liver and Intestinal CL|Reference concentration", rep(theta[3, k], pop_size))
-        setParameterValuesByPath('Liver and Intestinal CL|Reference concentration',
-                                 theta[3, k],
-                                 simulation = sim)
+        for (popfun in population_functions) {
+          popfun(population, theta, k)
+        }
+        # setParameterValuesByPath('Liver and Intestinal CL|Reference concentration',
+        #                          theta[3, k],
+        #                          simulation = sim)
 
         # # This line scales the dissolution profile inside the model using the two scaling factors
         .scale_dissolution_profile(sim, c(theta[1, k], theta[2, k]))
@@ -186,12 +189,15 @@ multi_mu <- function(theta, t, individuals) {
   } else {
     t1 <- system.time({
       # for (k in 1:length(theta)) {
-      pop_theta = c()
-      for (i in 1:length(theta)) {
-        pop_theta <- append(pop_theta, rep(theta[i], 100))
-      }
+      # pop_theta = c()
+      # for (i in 1:length(theta[1, ])) {
+      #   pop_theta <- append(pop_theta, rep(theta[1, i], 100))
+      # }
       #this line sets the ith theta[3] to all the subjects in the population
-      population$setParameterValues("Liver Enzyme|Reference concentration", pop_theta)
+      # population$setParameterValues("Liver Enzyme|Reference concentration", pop_theta)
+      for (popfun in population_functions) {
+        popfun(population, theta)
+      }
       # setParameterValuesByPath('Liver Enzyme|Reference concentration',
       #                              theta[k],
       #                              simulation = sim)
@@ -206,7 +212,7 @@ multi_mu <- function(theta, t, individuals) {
       resPath <- res$allQuantityPaths[[1]]
       resData <- getOutputValues(res, quantitiesOrPaths = resPath)
 
-      for (sub in 1:(100 * length(theta))) {
+      for (sub in 1:(100 * length(theta[1, ]))) {
         # Return format m[i,l] where i->1..Nsub and l->1..size(theta)
         # Filter the non-needed concentrations (not all 't' are needed)
         j <- ((sub - 1) %% 100) + 1
