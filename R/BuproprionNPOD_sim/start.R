@@ -3,7 +3,7 @@ setwd("R/BuproprionNPOD_sim")
 source("Run_Dopt.r")
 library(ospsuite) # PK-Sim R toolbox
 
-run <- "sim"
+run <- "bup"
 # run <- "bup"
 
 ## PARAMETER DEFINITION ##
@@ -94,10 +94,50 @@ if (run == "sim") {
 
 
   population_functions <- c(function(.population, .theta, .index = NULL) {
-    .population$setParameterValues("Liver and Intestinal CL|Reference concentration", rep(.theta[3, index], length(.population$allIndividualIds)))
+    .population$setParameterValues("Liver and Intestinal CL|Reference concentration", rep(.theta[3, .index], length(.population$allIndividualIds)))
   }
   )
 
-  simulation_functions <- c()
+
+  simulation_functions <- c(function(.simulation, .theta, .index = NULL) {
+    .scale_dissolution_profile <- function(simulation, scaling_factors = c(1, 1)) {
+      dissolution_data_path = "Applications|PO 150 mg - human|SR PO 150 mg - FDA table|Fraction (dose)"
+      if (all(scaling_factors > 0) && (!identical(scaling_factors, c(1, 1)))) {
+        dissolution_data_parameter <- getParameter(dissolution_data_path, simulation)
+        dissolution_data_formula <- dissolution_data_parameter$formula
+        dissolution_data_all_points <- dissolution_data_formula$allPoints
+
+        numPoints <- length(dissolution_data_all_points)
+
+        # Initialize vectors to hold values of table
+        times <- rep(0, numPoints)
+        fractions <- rep(0, numPoints)
+
+        # Read in points
+        for (i in 1:numPoints) {
+          times[i] <- dissolution_data_all_points[[i]]$x
+          fractions[i] <- dissolution_data_all_points[[i]]$y
+        }
+
+        points <- array(c(times, fractions), dim = c(numPoints, 2))
+        # print(points)
+
+        # Apply scaling factor to table
+        new_x <- points[, 1] * scaling_factors[1]
+        new_y <- points[, 2] * scaling_factors[2]
+
+        # print(new_x)
+        # print(new_y)
+
+        dissolution_data_formula$setPoints(new_x, new_y)
+      } else {
+        if (!all(scaling_factors > 0)) {
+          print("Negative scaling factor is not allowed.")
+        }
+        return(NULL)
+      }
+    }
+    .scale_dissolution_profile(.simulation, c(.theta[1, .index], .theta[2, .index]))
+  })
 }
 ans <- run_dopt(sim_file, pkdata_file, params, individuals, population_functions, simulation_functions)

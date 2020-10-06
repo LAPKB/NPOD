@@ -70,45 +70,6 @@
 # y <- mu(theta, t, individuals[[1]])
 # plot(c(0,t), y)
 
-.scale_dissolution_profile <- function(simulation, scaling_factors = c(1, 1)) {
-  dissolution_data_path = "Applications|PO 150 mg - human|SR PO 150 mg - FDA table|Fraction (dose)"
-  if (all(scaling_factors > 0) && (!identical(scaling_factors, c(1, 1)))) {
-    dissolution_data_parameter <- getParameter(dissolution_data_path, simulation)
-    dissolution_data_formula <- dissolution_data_parameter$formula
-    dissolution_data_all_points <- dissolution_data_formula$allPoints
-
-    numPoints <- length(dissolution_data_all_points)
-
-    # Initialize vectors to hold values of table
-    times <- rep(0, numPoints)
-    fractions <- rep(0, numPoints)
-
-    # Read in points
-    for (i in 1:numPoints) {
-      times[i] <- dissolution_data_all_points[[i]]$x
-      fractions[i] <- dissolution_data_all_points[[i]]$y
-    }
-
-    points <- array(c(times, fractions), dim = c(numPoints, 2))
-    # print(points)
-
-    # Apply scaling factor to table
-    new_x <- points[, 1] * scaling_factors[1]
-    new_y <- points[, 2] * scaling_factors[2]
-
-    # print(new_x)
-    # print(new_y)
-
-    dissolution_data_formula$setPoints(new_x, new_y)
-  } else {
-    if (!all(scaling_factors > 0)) {
-      print("Negative scaling factor is not allowed.")
-    }
-    return(NULL)
-  }
-}
-
-
 
 multi_mu <- function(theta, t, individuals) {
   print("Multi Mu")
@@ -118,6 +79,7 @@ multi_mu <- function(theta, t, individuals) {
 
 
   sim <- loadSimulation(sim_file)
+  n_ind <- length(individuals) #length(t)
 
   #If we know that all the parameters belongs to the population
   #We can just replicate the population and do one big simulation.
@@ -132,9 +94,15 @@ multi_mu <- function(theta, t, individuals) {
     return(res)
   }
 
-  lines = read_lines(file("test.csv"))
-  lines = .rep_population(lines, length(theta[1,]))
-  write_lines(lines, "population.csv")
+  if (length(simulation_functions) > 0) {
+    file.copy("test.csv", "population.csv")
+  } else {
+    lines = read_lines(file("test.csv"))
+    lines = .rep_population(lines, length(theta[1,]))
+    write_lines(lines, "population.csv")
+  }
+
+
 
   # pop <- read.csv("population.csv")
   # pop$IndividualId <- as.character((1:(length(lines) - 1)))
@@ -143,14 +111,17 @@ multi_mu <- function(theta, t, individuals) {
 
   population <- loadPopulation("population.csv")
   pop_size <- length(population$allIndividualIds)
-  time_points <- length(unique(t)[[1]])
+  time_points <- length(unique(unlist(t))) #We might be able to get this number from the result
+  if (!(0 %in% unique(unlist(t)))) {
+    time_points = time_points + 1
+  }
 
   #Set the times
   sim$outputSchema$clear() #first clear default
-  sim$outputSchema$addTimePoints(unlist(unique(t)[[1]])) #add times
+  sim$outputSchema$addTimePoints(unique(unlist(t))) #add times
 
-  m <- matrix(rep(list(), pop_size), nrow = 100, ncol = length(theta[1,]))
-  if (sim_param) {
+  m <- matrix(rep(list(), pop_size), nrow = n_ind, ncol = length(theta[1,]))
+  if (length(simulation_functions) > 0) {
     t1 <- system.time({
       for (k in 1:length(theta[1, ])) {
         #this line sets the ith theta[3] to all the subjects in the population
@@ -158,12 +129,15 @@ multi_mu <- function(theta, t, individuals) {
         for (popfun in population_functions) {
           popfun(population, theta, k)
         }
+        for (simfun in simulation_functions) {
+          simfun(sim, theta, k)
+        }
         # setParameterValuesByPath('Liver and Intestinal CL|Reference concentration',
         #                          theta[3, k],
         #                          simulation = sim)
 
         # # This line scales the dissolution profile inside the model using the two scaling factors
-        .scale_dissolution_profile(sim, c(theta[1, k], theta[2, k]))
+        # .scale_dissolution_profile(sim, c(theta[1, k], theta[2, k]))
 
         # Run the simulation
         res <- runSimulation(simulation = sim, population = population)
@@ -171,16 +145,15 @@ multi_mu <- function(theta, t, individuals) {
         #Extract the results
         resPath <- res$allQuantityPaths[[1]]
         resData <- getOutputValues(res, quantitiesOrPaths = resPath)
-
-        for (sub in resData$data$IndividualId) {
+        for (sub in 1:n_ind) {
           # Return format m[i,l] where i->1..Nsub and l->1..size(theta)
           # Filter the non-needed concentrations (not all 't' are needed)
-          m[[sub, k]] <- resData$data[resData$data[1] == sub][-(1:28)][resData$data[resData$data[1] == sub][(15:28)] %in% t[[sub]]]
+          m[[sub, k]] <- resData$data[resData$data[1] == sub][-(1:(2 * time_points))][resData$data[resData$data[1] == sub][((time_points + 1):(2 * time_points))] %in% t[[sub]]]
         }
 
         # Restore the dissolution profile
         # TODO: improve this
-        sim <- loadSimulation("PO SR 150 mg bupropion to human - Connarn et al 2017 - table - June 2.pkml")
+        sim <- loadSimulation(sim_file)
         sim$outputSchema$clear() #first clear default
         sim$outputSchema$addTimePoints(unlist(t)) #add times
 
@@ -196,7 +169,7 @@ multi_mu <- function(theta, t, individuals) {
       #this line sets the ith theta[3] to all the subjects in the population
       # population$setParameterValues("Liver Enzyme|Reference concentration", pop_theta)
       for (popfun in population_functions) {
-        popfun(population, theta)
+        popfun(population, theta, 0)
       }
       # setParameterValuesByPath('Liver Enzyme|Reference concentration',
       #                              theta[k],
@@ -212,12 +185,13 @@ multi_mu <- function(theta, t, individuals) {
       resPath <- res$allQuantityPaths[[1]]
       resData <- getOutputValues(res, quantitiesOrPaths = resPath)
 
-      for (sub in 1:(100 * length(theta[1, ]))) {
+      for (sub in 1:(n_ind * length(theta[1, ]))) {
         # Return format m[i,l] where i->1..Nsub and l->1..size(theta)
         # Filter the non-needed concentrations (not all 't' are needed)
-        j <- ((sub - 1) %% 100) + 1
-        k <- ((sub - 1) %/% 100) + 1
-        m[[j, k]] <- resData$data[resData$data[1] == sub][-(1:22)] #[resData$data[resData$data[1] == sub][(12:22)] %in% t[[sub]]]
+        j <- ((sub - 1) %% n_ind) + 1
+        k <- ((sub - 1) %/% n_ind) + 1
+        #resData$data[resData$data[1] == sub] is of size 3*time_points the first third is the id, the second third are the times and the third third is the data
+        m[[j, k]] <- resData$data[resData$data[1] == sub][-(1:(2 * time_points))] #[resData$data[resData$data[1] == sub][(12:22)] %in% t[[sub]]]
       }
 
       # Restore the dissolution profile
