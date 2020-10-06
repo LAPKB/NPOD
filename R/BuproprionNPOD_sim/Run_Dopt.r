@@ -28,8 +28,7 @@ run_dopt <- function(sim_file, pkdata_file, params, individuals_old, population_
   sim_file <<- sim_file
   pkdata_file <<- pkdata_file
   params <- params
-  sim_param <<- length(simulation_functions) > 0 # I think we don't need this one
-  individuals_old <<- individuals_old
+  individuals_old <- individuals_old
   simulation_functions <<- simulation_functions
   population_functions <<- population_functions
 
@@ -117,8 +116,10 @@ run_dopt <- function(sim_file, pkdata_file, params, individuals_old, population_
 
   ####### TEST BLOCK ####### REMOVE BEFORE RUNNING
   # t1 <- system.time({
-  #   m <- multi_mu(1, t, individuals)
+  #   m <- multi_mu(theta_0, t, individuals)
   # })
+
+  # return(m)
 
 
   # plot(t[[1]], m[[1, 1]], col = "red")
@@ -129,7 +130,7 @@ run_dopt <- function(sim_file, pkdata_file, params, individuals_old, population_
   #   points(t[[l]], m[[l, 1]], col = "green")
   # }
 
-  # psi <- multi_prob(y, t, theta, sigma, individuals, m)
+  # psi <- multi_prob(y, t, theta_0, sigma, individuals, m)
   # ans <- burke(psi)
   ##### END TEST BLOCK #####
   # error <- c()

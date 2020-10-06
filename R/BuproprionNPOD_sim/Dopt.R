@@ -24,15 +24,19 @@ Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma, a, b, individuals) {
     ans1 <- burke(P1)
     lam1 <- ans1$lambda
     ind1 <- (lam1 > 0.00000001) & (lam1 > (max(lam1) / 1000))
-    #inb_theta <- matrix(old_theta[, ind1], nrow = nrow(old_theta), ncol = ncol(old_theta[, ind1]))
-    inb_theta <- matrix(old_theta[ind1])
-    #print(inb_theta)
+    inb_theta <- tryCatch({
+      matrix(old_theta[, ind1], nrow = nrow(old_theta), ncol = ncol(old_theta[, ind1]))
+    }, error = function(e) {
+      matrix(old_theta[, ind1], byrow = T, ncol = sum(ind1))
+    })
+    # inb_theta <- matrix(old_theta[, ind1], nrow = nrow(old_theta), ncol = ncol(old_theta[, ind1]))
+    # inb_theta <- matrix(old_theta[,ind1])
+    print(inb_theta)
 
     lambda <- c()
     fobj <- c()
 
     P2 <- PSI_2(y, t, inb_theta, sigma, individuals)
-    ans2 <- c()
     ans2 <- burke(P2)
 
     #updating of F1
@@ -41,7 +45,12 @@ Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma, a, b, individuals) {
 
     ind2 <- (lam2 > (max(lam2) / 1000))
     new_w <- lam2[ind2] / sum(lam2[ind2])
-    new_theta <- matrix(inb_theta[ind2])
+    new_theta <- tryCatch({
+      matrix(inb_theta[, ind2], nrow = nrow(inb_theta), ncol = ncol(inb_theta[, ind2]))
+    }, error = function(e) {
+      matrix(inb_theta[, ind2], byrow = T, ncol = sum(ind2))
+    })
+    # new_theta <- matrix(inb_theta[ind2])
     print(new_theta)
 
 
@@ -51,7 +60,7 @@ Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma, a, b, individuals) {
     #print(abs(new_F[count+2] - new_F[count+1]))
     K <- length(new_theta[1,])
     pyl <- P2 %*% new_w
-
+    #TODO: Ask Alona, the size of new_theta is increasing, 1:k is fixed, is not testing all supp points.
     for (l in 1:K) {
       #Dtheta <- function(.theta) { D(.theta, y, t, sigma, pyl, individuals) }
       multi_Dtheta <- function(.theta) {-1 * multi_D(.theta, y, t, sigma, pyl, individuals) }
