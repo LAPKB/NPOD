@@ -71,7 +71,7 @@
 # plot(c(0,t), y)
 
 
-multi_mu <- function(theta, t, individuals) {
+multi_mu <- function(theta, t, individuals, filter.times = T) {
   print("Multi Mu")
   #Ok, I have a problem, theta[2] and theta[3] are parameters that modify the simulation
   #so... in order to simulate all the posibilities, it seems that I need to simulate K times
@@ -148,7 +148,11 @@ multi_mu <- function(theta, t, individuals) {
         for (sub in 1:n_ind) {
           # Return format m[i,l] where i->1..Nsub and l->1..size(theta)
           # Filter the non-needed concentrations (not all 't' are needed)
-          m[[sub, k]] <- resData$data[resData$data[1] == sub][-(1:(2 * time_points))][resData$data[resData$data[1] == sub][((time_points + 1):(2 * time_points))] %in% t[[sub]]]
+          if (filter.times) {
+            m[[sub, k]] <- resData$data[resData$data[1] == sub][-(1:(2 * time_points))][resData$data[resData$data[1] == sub][((time_points + 1):(2 * time_points))] %in% t[[sub]]]
+          } else {
+            m[[sub, k]] <- resData$data[resData$data[1] == sub][-(1:(2 * time_points))]
+          }
         }
 
         # Restore the dissolution profile
