@@ -5,6 +5,9 @@ library(ospsuite) # PK-Sim R toolbox
 
 run <- "bup"
 # run <- "bup"
+#-1555.901
+#-1555.835
+#load("ans.Rdata")
 
 ## PARAMETER DEFINITION ##
 if (run == "sim") {
@@ -64,7 +67,7 @@ if (run == "sim") {
   sim_file <- "PO SR 150 mg bupropion to human - Connarn et al 2017 - table - June 2.pkml"
   params <- vector(mode = "list", length = 2)
   params[[1]] <- c(0.1, 150, 0.1) # min
-  params[[2]] <- c(10, 300, 10) #max
+  params[[2]] <- c(10, 600, 10) #max
   population_data <- read_csv(population_file)
   number_of_individuals <- length(population_data$ID)
   individuals <- vector(mode = "list", length = number_of_individuals)

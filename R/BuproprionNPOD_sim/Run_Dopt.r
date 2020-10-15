@@ -115,23 +115,56 @@ run_dopt <- function(sim_file, pkdata_file, params, individuals_old, population_
   theta_d <- 10e-4
 
   ####### TEST BLOCK ####### REMOVE BEFORE RUNNING
+  # load("ans.Rdata")
   # t1 <- system.time({
-  #   m <- multi_mu(theta_0, t, individuals)
+  #   m <- multi_mu(matrix(c(0.02, 1), ncol = 2, byrow = T), t, individuals)
   # })
 
-  # return(m)
+  # # return(m)
 
-
-  # plot(t[[1]], m[[1, 1]], col = "red")
+  # # plot(c(0, 3000), c(0, 250), col = "white", xlab = "Time (m)", ylab = "Concentration")
+  # plot(c(1, 300), c(1, 300), type = "l", col = "black", xlab = "Observed", ylab = "Predicted", log = "xy")
+  # total_wavg = c()
   # for (l in 1:length(y)) {
-  #   lines(t[[l]], y[[l]])
-  #   points(t[[l]], y[[l]])
-  #   lines(t[[l]], m[[l, 1]], col = "green")
-  #   points(t[[l]], m[[l, 1]], col = "green")
+  #   # lines(t[[l]], y[[l]], col = "#40687A", lwd = "2")
+  #   # points(t[[l]], y[[l]], col = "#40687A")
+  #   wavg = rep(0, length(m[[l, 1]])) #matrix(rep(list(), length(ans$w)), nrow = 22, ncol = 1)
+  #   for (sup in 1:length(ans$w)) {
+  #     wavg = wavg + m[[l, sup]] * ans$w[sup]
+  #   }
+  #   # lines(t[[l]], wavg, col = "#81D4FA", lwd = "2")
+  #   # points(t[[l]], wavg, col = "#81D4FA")
+  #   points(y[[l]], wavg, col = rainbow(l), pch = 15)
+  #   total_wavg[[l]] = wavg
   # }
+  # data <- data.frame(x = unlist(y), y = unlist(total_wavg))
+  # line <- lm(formula = y ~ x, data = data)
+  # # sub <- 3
 
-  # psi <- multi_prob(y, t, theta_0, sigma, individuals, m)
-  # ans <- burke(psi)
+  # # Libraries
+  # library(ggplot2)
+
+  # # Create data
+  # data <- data.frame(x = ans$theta[3,], y = ans$w)
+
+  # # Plot
+  # p3 <- ggplot(data, aes(x = x, y = y)) +
+  # geom_point() +
+  # geom_segment(aes(x = x, xend = x, y = 0, yend = y)) +
+  # ggtitle("Marginals - Optimal density") +
+  # xlab("Liver Enzyme|Reference concentration") +
+  # ylab("Weight")
+
+  # gridExtra::grid.arrange(p1, p2, p3, ncol = 3)
+  # # plot(t[[sub]], m[[sub, 6]], col = "white")
+
+  # n <- 21
+  # s <- 2.346697
+  # error <- qnorm(0.975) * s / sqrt(n)
+
+
+  # # psi <- multi_prob(y, t, theta_0, sigma, individuals, m)
+  # # ans <- burke(psi)
   ##### END TEST BLOCK #####
   # error <- c()
   # for (i in 1:number_of_individuals) {
