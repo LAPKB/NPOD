@@ -1,4 +1,4 @@
-Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma, a, b, individuals) {
+Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma, a, b) {
   print("dopt")
   old_theta <- theta_0
   count <- 1
@@ -20,7 +20,7 @@ Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma, a, b, individuals) {
     #old_F[count] <-new_F[count] 
 
 
-    P1 <- PSI_2(y, t, old_theta, sigma, individuals)
+    P1 <- PSI_2(y, t, old_theta, sigma)
     ans1 <- burke(P1)
     lam1 <- ans1$lambda
     ind1 <- (lam1 > 0.00000001) & (lam1 > (max(lam1) / 1000))
@@ -36,7 +36,7 @@ Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma, a, b, individuals) {
     lambda <- c()
     fobj <- c()
 
-    P2 <- PSI_2(y, t, inb_theta, sigma, individuals)
+    P2 <- PSI_2(y, t, inb_theta, sigma)
     ans2 <- burke(P2)
 
     #updating of F1
@@ -63,7 +63,7 @@ Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma, a, b, individuals) {
     #TODO: Ask Alona, the size of new_theta is increasing, 1:k is fixed, is not testing all supp points.
     for (l in 1:K) {
       #Dtheta <- function(.theta) { D(.theta, y, t, sigma, pyl, individuals) }
-      multi_Dtheta <- function(.theta) {-1 * multi_D(.theta, y, t, sigma, pyl, individuals) }
+      multi_Dtheta <- function(.theta) {-1 * multi_D(.theta, y, t, sigma, pyl) }
       # fun <- function(.theta_parameter) {-1 * Dtheta(.theta_parameter) }
       cand_theta <- fminsearch(multi_Dtheta, new_theta[, l], options)
       print(cand_theta)
