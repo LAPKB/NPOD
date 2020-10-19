@@ -8,9 +8,9 @@ prob <- function(y, t, theta, sigma, individual, m) {
   # }
   j <- length(y)
   z <- matrix(0, 1, j)
-  if (missing(m)) {
-    m <- mu(theta, t, individual)
-  }
+  # if (missing(m)) {
+  #   m <- mu(theta, t, individual)
+  # }
 
   if (length(y) != length(m)) {
     warning("Observed and predicted sizes don't match")
@@ -33,7 +33,7 @@ prob <- function(y, t, theta, sigma, individual, m) {
   return(prob)
 }
 
-multi_prob <- function(y, t, theta, sigma, individuals, m) {
+multi_prob <- function(y, t, theta, sigma, m) {
   print("Multi prob")
   #Mu shouldn't be here
   N <- length(y)
@@ -51,7 +51,7 @@ multi_prob <- function(y, t, theta, sigma, individuals, m) {
 
   if (missing(m)) {
     t1 <- system.time({
-      m <- multi_mu(theta, t, individuals)
+      m <- cached_mu(theta, t)
     })
     print(t1)
   }

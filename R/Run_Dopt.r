@@ -1,15 +1,5 @@
 
-#source("initial_data.r")
-source("Dopt.R")
-source("PSI_2.r")
-source("D.r")
-source("burke.R")
-source("prune.r")
-source("mu.r")
-source("prob.r")
-
-
-
+library(memoise)
 library(readr)
 library(ggplot2)
 library(tibble)
@@ -18,17 +8,24 @@ library(neldermead)
 library(DiceDesign)
 library(readxl)
 
+source("Dopt.R")
+source("PSI_2.r")
+source("D.r")
+source("burke.R")
+source("prune.r")
+source("mu.r")
+source("prob.r")
 
 #this statement not needed on LAPKB machine
 # initPKSim("C:/Users/alona.kryshchenko/Dropbox (CSUCI)/For Alan/SummerGrant/Bupropion with R-Toolbox/PK-Sim 9.0.144")
 
-run_dopt <- function(sim_file, pkdata_file, params, individuals_old, population_functions, simulation_functions) {
+run_dopt <- function(sim_file, pkdata_file, params, individuals, population_functions, simulation_functions) {
 
   #TODO: WIP global variables.
   sim_file <<- sim_file
   pkdata_file <<- pkdata_file
   params <- params
-  individuals_old <- individuals_old
+  individuals <- individuals
   simulation_functions <<- simulation_functions
   population_functions <<- population_functions
 
@@ -39,7 +36,7 @@ run_dopt <- function(sim_file, pkdata_file, params, individuals_old, population_
   # # Convert population_data into IndividualCharacteristics objects used in PK-Sim simulation
   # # Initialize list of individuals
   # number_of_individuals <- length(population_data$IndividualId)
-  number_of_individuals <- length(individuals_old)
+  number_of_individuals <- length(individuals)
 
 
 
@@ -57,7 +54,7 @@ run_dopt <- function(sim_file, pkdata_file, params, individuals_old, population_
   for (i in 1:number_of_individuals) { ind[i] = length(y_old[[i]]) != 0 }
   #TODO: 32 should not be hardcoded
   t <- time[as.logical(ind)]
-  individuals <- individuals_old[as.logical(ind)]
+  individuals <- individuals[as.logical(ind)]
   y <- y_old[as.logical(ind)]
   sigma <- sigma_old[as.logical(ind)]
 
@@ -117,7 +114,7 @@ run_dopt <- function(sim_file, pkdata_file, params, individuals_old, population_
   ####### TEST BLOCK ####### REMOVE BEFORE RUNNING
   # load("ans.Rdata")
   # t1 <- system.time({
-  # m <- multi_mu(matrix(ans$theta, ncol = , byrow = T), t, individuals)
+  # m <- cached_mu(matrix(c(1,2,3), ncol = 1, byrow = T), t)
   # })
 
   # # return(m)
@@ -179,7 +176,7 @@ run_dopt <- function(sim_file, pkdata_file, params, individuals_old, population_
 
 
 
-  ans <- Dopt(y, t, theta_0, theta_F, theta_d, sigma, a, b, individuals)
+  ans <- Dopt(y, t, theta_0, theta_F, theta_d, sigma, a, b)
 
   count <- ans$count
   theta <- ans$theta
