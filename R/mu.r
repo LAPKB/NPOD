@@ -122,7 +122,7 @@ multi_mu <- function(theta, t) {
         j <- ((sub - 1) %% n_ind) + 1
         k <- ((sub - 1) %/% n_ind) + 1
         #resData$data[resData$data[1] == sub] is of size 3*time_points the first third is the id, the second third are the times and the third third is the data
-        m[[j, k]] <- resData$data[resData$data[1] == sub][-(1:(2 * time_points))][resData$data[resData$data[1] == sub][((time_points + 1):(2 * time_points))] %in% t[[sub]]]
+        m[[j, k]] <- resData$data[resData$data[1] == sub][-(1:(2 * time_points))][resData$data[resData$data[1] == sub][((time_points + 1):(2 * time_points))] %in% t[[j]]]
         #[resData$data[resData$data[1] == sub][(12:22)] %in% t[[sub]]]
       }
 
