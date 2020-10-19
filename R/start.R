@@ -3,7 +3,7 @@ setwd("R")
 source("Run_Dopt.r")
 library(ospsuite) # PK-Sim R toolbox
 
-run <- "sim2"
+run <- "bup2"
 
 
 if (run == "sim") {
@@ -47,7 +47,7 @@ if (run == "sim") {
   population_functions <- c(function(.population, .theta, index = NULL) {
     pop_theta = c()
     for (i in 1:length(.theta[1, ])) {
-      pop_theta <- append(pop_theta, rep(.theta[1, i], 100))
+      pop_theta <- append(pop_theta, rep(.theta[1, i], number_of_individuals))
     }
     .population$setParameterValues("Liver Enzyme|Reference concentration", pop_theta)
   }
@@ -57,8 +57,7 @@ if (run == "sim") {
 
 
 
-}
-if (run == "sim2") {
+} else if (run == "sim2") {
   #   population_file <- "Normal_cleareance_pop.csv"
   pkdata_file <- "data/obs_sim2.csv"
   sim_file <- "data/sim2.pkml"
@@ -81,7 +80,7 @@ if (run == "sim2") {
   population_functions <- c(function(.population, .theta, index = NULL) {
     pop_theta = c()
     for (i in 1:length(.theta[1, ])) {
-      pop_theta <- append(pop_theta, rep(.theta[1, i], 100))
+      pop_theta <- append(pop_theta, rep(.theta[1, i], number_of_individuals))
     }
     .population$setParameterValues("Liver Enzyme|Reference concentration", pop_theta)
   }
@@ -209,21 +208,21 @@ if (run == "sim2") {
       function(.population, .theta, .index = NULL) {
         pop_theta = c()
         for (i in 1:length(.theta[1, ])) {
-          pop_theta <- append(pop_theta, rep(.theta[1, i], 100))
+          pop_theta <- append(pop_theta, rep(.theta[1, i], number_of_individuals))
         }
         .population$setParameterValues("Applications|PO 150 mg - human|SR PO 150 mg - FDA table|ScaleFactorX", pop_theta)
       },
       function(.population, .theta, .index = NULL) {
         pop_theta = c()
         for (i in 1:length(.theta[1, ])) {
-          pop_theta <- append(pop_theta, rep(.theta[2, i], 100))
+          pop_theta <- append(pop_theta, rep(.theta[2, i], number_of_individuals))
         }
         .population$setParameterValues("Applications|PO 150 mg - human|SR PO 150 mg - FDA table|ScaleFactorY", pop_theta)
       },
       function(.population, .theta, .index = NULL) {
         pop_theta = c()
         for (i in 1:length(.theta[1, ])) {
-          pop_theta <- append(pop_theta, rep(.theta[3, i], 100))
+          pop_theta <- append(pop_theta, rep(.theta[3, i], number_of_individuals))
         }
         .population$setParameterValues("Liver and Intestinal CL|Reference concentration", pop_theta)
       }
