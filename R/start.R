@@ -3,8 +3,10 @@ setwd("R")
 source("Run_Dopt.r")
 library(ospsuite) # PK-Sim R toolbox
 
-run <- "bup2"
+run <- "sim2"
 #2:40pm
+#-8min
+
 
 if (run == "sim") {
   population_file <- "data/Normal_cleareance_pop.csv"

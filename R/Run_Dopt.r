@@ -47,7 +47,10 @@ run_dopt <- function(sim_file, pkdata_file, params, individuals, population_func
   for (i in 1:number_of_individuals) {
     time[[i]] <- pkdata[, 1][pkdata[, i + 1] != 999] * 60
     y_old[[i]] <- pkdata[, i + 1][pkdata[, i + 1] != 999]
-    sigma_old[[i]] <- (0.5 * 1.65 + 0.1 * y_old[[i]]) #* 0.0000000000000000001
+  }
+  min_y <- min(unlist(y_old))
+  for (i in 1:number_of_individuals) {
+    sigma_old[[i]] <- (0.5 * min_y + 0.1 * y_old[[i]])
   }
 
   ind <- c(0)
