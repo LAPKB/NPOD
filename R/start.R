@@ -3,12 +3,63 @@ setwd("R")
 source("Run_Dopt.r")
 library(ospsuite) # PK-Sim R toolbox
 
-run <- "sim2"
+run <- "bim_uni"
 #2:40pm
 #-8min
 
 
-if (run == "sim") {
+if (run == "bim_uni") {
+  population_file <- "data/bim_uni_pop.csv"
+  pkdata_file <- "data/data_bim_uni.csv"
+  sim_file <- "data/sim.pkml"
+  params <- vector(mode = "list", length = 2)
+  params[[1]] <- c(0.05) # min
+  params[[2]] <- c(5) #max
+  population_data <- read_csv(population_file)
+  number_of_individuals <- length(population_data$IndividualId)
+  individuals <- vector(mode = "list", length = number_of_individuals)
+  for (i in 1:number_of_individuals) {
+    # Process population
+    #if (population_data$Population[i] == "European") {
+    their_population <- HumanPopulation$European_ICRP_2002
+    #} else if (population_data$Population[i] == "BlackAmerican") {
+    #   their_population <- HumanPopulation$BlackAmerican_NHANES_1997
+    # } else if (population_data$Population[i] == "MexicanAmerican") {
+    #   their_population <- HumanPopulation$MexicanAmericanWhite_NHANES_1997
+    # } else if (population_data$Population[i] == "Asian") {
+    #   their_population <- HumanPopulation$Asian_Tanaka_1996
+    # }
+    # Process gender
+    if (population_data$Gender[i] == "FEMALE") {
+      their_gender <- Gender$Female
+    } else if (population_data$Gender[i] == "MALE") {
+      their_gender <- Gender$Male
+    }
+    # Create individual characteristics
+    # Every individual's age will be set to 40 years, the average of the age range given, i.e. 25-55 years
+    individual_chars <- createIndividualCharacteristics(species = Species$Human, population = their_population, gender = their_gender,
+                                                      weight = population_data$`Weight (kg)`[i], weightUnit = "kg",
+                                                      height = population_data$`Height (m)`[i], heightUnit = "m",
+                                                      age = population_data$`Age (yr)`[i], ageUnit = "year(s)")
+    # Add to list
+    individuals[[i]] <- individual_chars
+  }
+
+  #All the population functions might receive the population object and a the theta matrix
+  population_functions <- c(function(.population, .theta, index = NULL) {
+    pop_theta = c()
+    for (i in 1:length(.theta[1, ])) {
+      pop_theta <- append(pop_theta, rep(.theta[1, i], number_of_individuals))
+    }
+    .population$setParameterValues("Liver Enzyme|Reference concentration", pop_theta)
+  }
+  )
+
+  simulation_functions <- c()
+
+
+
+} else if (run == "sim") {
   population_file <- "data/Normal_cleareance_pop.csv"
   pkdata_file <- "data/data.csv"
   sim_file <- "data/sim.pkml"

@@ -1,0 +1,11 @@
+install.packages("memoise")
+install.packages("readr")
+install.packages("ggplot2")
+install.packages("tidyverse")
+install.packages("neldermead")
+install.packages("DiceDesign")
+install.packages("ospsuite")
+install.packages("bigstatsr")
+install.packages("R/rClr_0.8.3.zip", repos = NULL)
+install.packages("R/ospsuite_9.1.2.zip", repos = NULL)
+#Install Visual C++: https://aka.ms/vs/16/release/vc_redist.x64.exe
