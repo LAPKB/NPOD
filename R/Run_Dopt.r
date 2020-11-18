@@ -50,8 +50,8 @@ run_dopt <- function(sim_file, pkdata_file, params, individuals, population_func
   }
   min_y <- min(unlist(y_old))
   for (i in 1:number_of_individuals) {
-    #sigma_old[[i]] <- (0.5 * min_y + 0.08 * y_old[[i]]) 
-     sigma_old[[i]] <- (0.015 + 0.08 * y_old[[i]]) 
+    sigma_old[[i]] <- (0.5 * min_y + 0.05 * y_old[[i]]) 
+    #  sigma_old[[i]] <- (0.015 + 0.08 * y_old[[i]]) 
   }
 
   ind <- c(0)
@@ -105,10 +105,10 @@ run_dopt <- function(sim_file, pkdata_file, params, individuals, population_func
   b <- params[[2]]
 
   if (length(a) == 1) {
-    theta_0 <- a + t(runif.faure(10, 2)$design) * (b - a)
+    theta_0 <- a + t(runif.faure(number_of_individuals/10, 2)$design) * (b - a)
     theta_0 <- matrix(theta_0[1,], ncol = length(theta_0[1,]))
   } else {
-    theta_0 <- a + t(runif.faure(10, length(a))$design) * (b - a)
+    theta_0 <- a + t(runif.faure(number_of_individuals/10, length(a))$design) * (b - a)
   }
   theta_0
 
