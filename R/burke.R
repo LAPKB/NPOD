@@ -3,7 +3,7 @@ ipm <- function(psi, ldpsi, theta, ldtheta, npoint, nsub, ijob, x, dx, y, dy, fo
 
   #Windows
   #load fortran ipm library
-  dyn.load("ipm.dll")
+  dyn.load("ipm_v2.dll")
 
   #Linux/MAC
   #dyn.load("ipm.so")
@@ -34,9 +34,12 @@ ipm <- function(psi, ldpsi, theta, ldtheta, npoint, nsub, ijob, x, dx, y, dy, fo
   #   if (length(x) != length(w)) { stop("Both vectors should have the same size") }
   sink("log.txt", append = FALSE, split = TRUE)
   .Call("c_emint", psi, ldpsi, theta, ldtheta, npoint, nsub, ijob, x, dx, y, dy, fobj, gap, nvar, keep, ihess, isupres)
-  print(list("fobj" = fobj, "lambda" = x))
+  print(list("fobj" = fobj, "lambda" = x, "ijob" = ijob, "ihess" = ihess))
   sink()
-  return(list("lambda" = x, "fobj" = fobj))
+  if(ijob<0 || ihess <0){
+    stop()
+  }
+  return(list("lambda" = x, "fobj" = fobj, "ijob" = ijob, "ihess" = ihess))
 }
 
 burke <- function(PSI) {
