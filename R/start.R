@@ -3,7 +3,7 @@ setwd("R")
 source("Run_Dopt.r")
 library(ospsuite) # PK-Sim R toolbox
 
-run <- "bim_uni_pm"
+run <- "bim_uni"
 #2:40pm
 #-8min
 
@@ -13,8 +13,8 @@ if (run == "bim_uni_pm") {
   pkdata_file <- "data/dataset_pm.csv"
   sim_file <- "data/sim.pkml"
   params <- vector(mode = "list", length = 2)
-  params[[1]] <- c(0.06) # min
-  params[[2]] <- c(0.23) #max
+  params[[1]] <- c(0.01) # min
+  params[[2]] <- c(3) #max
   population_data <- read_csv(population_file)
   number_of_individuals <- length(population_data$IndividualId)
   individuals <- vector(mode = "list", length = number_of_individuals)
