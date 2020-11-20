@@ -52,6 +52,9 @@ Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma, a, b) {
     })
     # new_theta <- matrix(inb_theta[ind2])
     print(new_theta)
+    print("START")
+    print(ans2)
+    print("END")
 
 
     if (abs(new_F[count + 2] - new_F[count + 1]) <= theta_F) {

@@ -44,13 +44,18 @@ run_dopt <- function(sim_file, pkdata_file, params, individuals, population_func
   time <- vector(mode = "list", length = number_of_individuals)
   y_old <- vector(mode = "list", length = number_of_individuals)
   sigma_old <- vector(mode = 'list', length = number_of_individuals)
+  add_noise <- function(vector, sigma){
+    noise <- rnorm(length(vector),0,sigma)
+    return(vector + noise)
+  }
   for (i in 1:number_of_individuals) {
     time[[i]] <- pkdata[, 1][pkdata[, i + 1] != 999] * 60
-    y_old[[i]] <- pkdata[, i + 1][pkdata[, i + 1] != 999]
+    y_old[[i]] <- add_noise(pkdata[, i + 1][pkdata[, i + 1] != 999], 0.1)
   }
   min_y <- min(unlist(y_old))
   for (i in 1:number_of_individuals) {
-    sigma_old[[i]] <- (0.5 * min_y + 0.05 * y_old[[i]]) 
+    # sigma_old[[i]] <- (0.5 * min_y + 0.1 * y_old[[i]])  
+    sigma_old[[i]] <- 0.1 
     #  sigma_old[[i]] <- (0.015 + 0.08 * y_old[[i]]) 
   }
 
@@ -61,6 +66,8 @@ run_dopt <- function(sim_file, pkdata_file, params, individuals, population_func
   individuals <- individuals[as.logical(ind)]
   y <- y_old[as.logical(ind)]
   sigma <- sigma_old[as.logical(ind)]
+
+  
 
   characteristics <- individuals
 
@@ -105,37 +112,37 @@ run_dopt <- function(sim_file, pkdata_file, params, individuals, population_func
   b <- params[[2]]
 
   if (length(a) == 1) {
-    theta_0 <- a + t(runif.faure(number_of_individuals/10, 2)$design) * (b - a)
+    theta_0 <- a + t(runif.faure(number_of_individuals, 2)$design) * (b - a)
     theta_0 <- matrix(theta_0[1,], ncol = length(theta_0[1,]))
   } else {
-    theta_0 <- a + t(runif.faure(number_of_individuals/10, length(a))$design) * (b - a)
+    theta_0 <- a + t(runif.faure(number_of_individuals, length(a))$design) * (b - a)
   }
   theta_0
 
   theta_F <- 10e-2
-  theta_d <- 10e-4
+  theta_d <- 10e-6
 
   ####### TEST BLOCK ####### REMOVE BEFORE RUNNING
   # load("ans.Rdata")
   # t1 <- system.time({
-  # m <- cached_mu(matrix(c(1,2,3), ncol = 1, byrow = T), t)
+  # m <- cached_mu(ans$theta, t)
   # })
 
   # # return(m)
 
   # plot(c(0, 1500), c(0, 2), col = "white", xlab = "Time (m)", ylab = "Concentration")
-  # # plot(c(0, 1.5), c(0, 1.5), type = "l", col = "black", xlab = "Observed", ylab = "Predicted")
+  #  plot(c(0, 1.5), c(0, 1.5), type = "l", col = "black", xlab = "Observed", ylab = "Predicted")
   # total_wavg = c()
   # for (l in 1:length(y)) {
-  #   lines(t[[l]], y[[l]], col = "#40687A")
-  #   points(t[[l]], y[[l]], col = "#40687A")
+  #   # lines(t[[l]], y[[l]], col = "#40687A")
+  #   # points(t[[l]], y[[l]], col = "#40687A")
   #   wavg = rep(0, length(m[[l, 1]])) #matrix(rep(list(), length(ans$w)), nrow = 22, ncol = 1)
   #   for (sup in 1:length(ans$w)) {
   #     wavg = wavg + m[[l, sup]] * ans$w[sup]
   #   }
-  #   lines(t[[l]], wavg, col = "#81D4FA")
-  #   points(t[[l]], wavg, col = "#81D4FA")
-  #   # points(y[[l]], wavg, col = rainbow(l), pch = 15)
+  #   # lines(t[[l]], wavg, col = "#81D4FA")
+  #   # points(t[[l]], wavg, col = "#81D4FA")
+  #   points(y[[l]], wavg, pch = 15)
   #   total_wavg[[l]] = wavg
   # }
   # data <- data.frame(x = unlist(y), y = unlist(total_wavg))

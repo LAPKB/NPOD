@@ -3,7 +3,7 @@ ipm <- function(psi, ldpsi, theta, ldtheta, npoint, nsub, ijob, x, dx, y, dy, fo
 
   #Windows
   #load fortran ipm library
-  dyn.load("ipm_v3.dll")
+  dyn.load("ipm_v4.dll")
 
   #Linux/MAC
   #dyn.load("ipm.so")
