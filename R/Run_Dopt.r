@@ -50,12 +50,12 @@ run_dopt <- function(sim_file, pkdata_file, params, individuals, population_func
   }
   for (i in 1:number_of_individuals) {
     time[[i]] <- pkdata[, 1][pkdata[, i + 1] != 999] * 60
-    y_old[[i]] <- add_noise(pkdata[, i + 1][pkdata[, i + 1] != 999], 0.1)
+    y_old[[i]] <- add_noise(pkdata[, i + 1][pkdata[, i + 1] != 999], 0.01)
   }
   min_y <- min(unlist(y_old))
   for (i in 1:number_of_individuals) {
-    # sigma_old[[i]] <- (0.5 * min_y + 0.1 * y_old[[i]])  
-    sigma_old[[i]] <- 0.1 
+     sigma_old[[i]] <- (0.5 * min_y + 0.1 * y_old[[i]])  
+    # sigma_old[[i]] <- 1 
     #  sigma_old[[i]] <- (0.015 + 0.08 * y_old[[i]]) 
   }
 
@@ -112,10 +112,10 @@ run_dopt <- function(sim_file, pkdata_file, params, individuals, population_func
   b <- params[[2]]
 
   if (length(a) == 1) {
-    theta_0 <- a + t(runif.faure(number_of_individuals, 2)$design) * (b - a)
+    theta_0 <- a + t(runif.faure(number_of_individuals/10, 2)$design) * (b - a)
     theta_0 <- matrix(theta_0[1,], ncol = length(theta_0[1,]))
   } else {
-    theta_0 <- a + t(runif.faure(number_of_individuals, length(a))$design) * (b - a)
+    theta_0 <- a + t(runif.faure(number_of_individuals/10, length(a))$design) * (b - a)
   }
   theta_0
 
