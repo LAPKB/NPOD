@@ -37,7 +37,15 @@ ipm <- function(psi, ldpsi, theta, ldtheta, npoint, nsub, ijob, x, dx, y, dy, fo
   print(list("fobj" = fobj, "lambda" = x, "ijob" = ijob, "ihess" = ihess))
   sink()
   if(ijob<0 || ihess <0){
-    stop()
+    n_err <- n_err + 1
+    err_log[n_err] <- list("ijob"=ijob, ihess="ihess", count="count")
+    if(n_err>=5){
+      sink("error.txt", append = FALSE, split = TRUE)
+      print(err_log)
+      sink()
+      stop()
+    }
+    print("Error detected! Trying to recovery... #err: ", n_err)
   }
   return(list("lambda" = x, "fobj" = fobj, "ijob" = ijob, "ihess" = ihess))
 }
