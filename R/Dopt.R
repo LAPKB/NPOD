@@ -1,7 +1,7 @@
 Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma, a, b) {
   print("dopt")
   old_theta <- theta_0
-  count <- 1
+  count <<- 1
   F0 <- -10 ^ (30)
   F1 <- 2 * F0
 

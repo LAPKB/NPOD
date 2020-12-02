@@ -29,6 +29,10 @@ run_dopt <- function(sim_file, pkdata_file, params, individuals, population_func
   simulation_functions <<- simulation_functions
   population_functions <<- population_functions
 
+  ## Error global variables
+  n_err <<- 0
+  err_log <<- c()
+
 
   ### Load the individuals into a list of objects holding their individual characteristics
   # population_data <- read_csv(pop_file)
@@ -44,17 +48,18 @@ run_dopt <- function(sim_file, pkdata_file, params, individuals, population_func
   time <- vector(mode = "list", length = number_of_individuals)
   y_old <- vector(mode = "list", length = number_of_individuals)
   sigma_old <- vector(mode = 'list', length = number_of_individuals)
-  add_noise <- function(vector, sigma){
-    noise <- rnorm(length(vector),0,sigma)
-    return(vector + noise)
+  add_noise <- function(vector, sigma1, sigma2){
+    noise_add <- vector + rnorm(length(vector),0,sigma1)
+    noise_mul <- vector * rnorm(length(vector),0,sigma2)
+    return(noise_add + noise_mul)
   }
   for (i in 1:number_of_individuals) {
     time[[i]] <- pkdata[, 1][pkdata[, i + 1] != 999] * 60
-    y_old[[i]] <- add_noise(pkdata[, i + 1][pkdata[, i + 1] != 999], 0.01)
+    y_old[[i]] <- add_noise(pkdata[, i + 1][pkdata[, i + 1] != 999], 0.5, 0.001)
   }
   min_y <- min(unlist(y_old))
   for (i in 1:number_of_individuals) {
-     sigma_old[[i]] <- (0.5 * min_y + 0.1 * y_old[[i]])  
+     sigma_old[[i]] <- (0.5 * min_y + 0.001 * y_old[[i]])  
     # sigma_old[[i]] <- 1 
     #  sigma_old[[i]] <- (0.015 + 0.08 * y_old[[i]]) 
   }
