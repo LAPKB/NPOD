@@ -1,0 +1,42 @@
+rm(list = ls())
+setwd("R")
+source("NPOD.R")
+library(ospsuite) # PK-Sim R toolbox
+
+population_file <- "data/demographics_pm.csv"
+pkdata_file <- "data/dataset_pm.csv"
+sim_file <- "data/sim.pkml"
+params <- vector(mode = "list", length = 2)
+params[[1]] <- c(0.01) # min
+params[[2]] <- c(3) #max
+population_data <- read_csv(population_file)
+number_of_individuals <- length(population_data$IndividualId)
+individuals <- vector(mode = "list", length = number_of_individuals)
+for (i in 1:number_of_individuals) {
+    their_population <- HumanPopulation$European_ICRP_2002
+    if (population_data$Gender[i] == "FEMALE") {
+        their_gender <- Gender$Female
+    } else if (population_data$Gender[i] == "MALE") {
+        their_gender <- Gender$Male
+    }
+    # Create individual characteristics
+    # Every individual's age will be set to 40 years, the average of the age range given, i.e. 25-55 years
+    individual_chars <- createIndividualCharacteristics(species = Species$Human, population = their_population, gender = their_gender,
+                                                        weight = population_data$`Organism.Weight..kg.`[i], weightUnit = "kg",
+                                                        height = population_data$`Organism.Height..dm.`[i], heightUnit = "dm",
+                                                        age = population_data$`Organism.Age..year.s..`[i], ageUnit = "year(s)")
+    # Add to list
+    individuals[[i]] <- individual_chars
+    }
+
+    #All the population functions might receive the population object and a the theta matrix
+    population_functions <- c(function(.population, .theta, index = NULL) {
+    pop_theta = c()
+    for (i in 1:length(.theta[1, ])) {
+        pop_theta <- append(pop_theta, rep(.theta[1, i], number_of_individuals))
+    }
+    .population$setParameterValues("Liver Enzyme|Reference concentration", pop_theta)
+    }
+)
+
+ans <- NPOD(sim_file, pkdata_file, params, individuals, population_functions)

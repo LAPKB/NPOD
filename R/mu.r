@@ -1,19 +1,4 @@
-
-
-multi_mu <- function(theta, t) {
-  print("Multi Mu")
-
-
-
-
-
-  sim <- loadSimulation(sim_file)
-  n_ind <- length(t)
-
-  #If we know that all the parameters belongs to the population
-  #We can just replicate the population and do one big simulation.
-
-  .rep_population <- function(lines, times) {
+.rep_population <- function(lines, times) {
     row <- c(lines[1], rep(lines[-1], times))
     res <- c(lines[1])
     for (i in 1:(length(lines[-1]) * times)) {
@@ -23,34 +8,45 @@ multi_mu <- function(theta, t) {
     return(res)
   }
 
-  if (length(simulation_functions) > 0) {
-    file.copy("test.csv", "population.csv")
-  } else {
-    lines = read_lines(file("test.csv"))
-    lines = .rep_population(lines, length(theta[1,]))
-    write_lines(lines, "population.csv")
+multi_mu <- function(theta, t) {
+  print("Multi Mu")
+
+  n_ind <- length(t)
+  if(simulator=="PKSIM"){ 
+    sim <- loadSimulation(sim_file)
+    if (length(simulation_functions) > 0) {
+      file.copy("test.csv", "population.csv")
+    } else {
+      lines = read_lines(file("test.csv"))
+      lines = .rep_population(lines, length(theta[1,]))
+      write_lines(lines, "population.csv")
+    }
+    population <- loadPopulation("population.csv")
+    pop_size <- length(population$allIndividualIds)
+    #Set the times
+    sim$outputSchema$clear() #first clear default
+    sim$outputSchema$addTimePoints(unique(unlist(t))) #add times
   }
-
-
-
-  # pop <- read.csv("population.csv")
-  # pop$IndividualId <- as.character((1:(length(lines) - 1)))
-  # write.csv(pop, "population.csv")
-
-
-  population <- loadPopulation("population.csv")
-  pop_size <- length(population$allIndividualIds)
+  
   time_points <- length(unique(unlist(t))) #We might be able to get this number from the result
   if (!(0 %in% unique(unlist(t)))) {
     time_points = time_points + 1
   }
 
-  #Set the times
-  sim$outputSchema$clear() #first clear default
-  sim$outputSchema$addTimePoints(unique(unlist(t))) #add times
 
-  m <- matrix(rep(list(), pop_size), nrow = n_ind, ncol = length(theta[1,]))
-  if (length(simulation_functions) > 0) {
+
+  m <- matrix(rep(list(), n_ind * length(theta[1,])), nrow = n_ind, ncol = length(theta[1,]))
+  if(simulator == "EQ"){
+    for (k in 1:length(theta[1, ])) {
+      for (sub in 1:n_ind) {
+        # Return format m[i,l] where i->1..Nsub and l->1..size(theta)
+        # Filter the non-needed concentrations (not all 't' are needed)
+        m[[sub, k]] <- model(theta[,k],t[[sub]])
+        #  resData$data[resData$data[1] == sub][-(1:(2 * time_points))][resData$data[resData$data[1] == sub][((time_points + 1):(2 * time_points))] %in% t[[sub]]]
+
+      }
+    }
+  }else if (length(simulation_functions) > 0) {
     t1 <- system.time({
       for (k in 1:length(theta[1, ])) {
         #this line sets the ith theta[3] to all the subjects in the population
@@ -135,7 +131,6 @@ multi_mu <- function(theta, t) {
       # }
     })
   }
-
   return(m)
 }
 
