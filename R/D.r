@@ -54,6 +54,7 @@ multi_D <- function(theta_parameter, y, t, sigma, PYL) {
   N <- length(y) # nsub
   D_comp = -N
   D_comp <- D_comp + sum(multi_prob(y, t, theta_parameter, sigma) / PYL)
+  print("End D")
   return(D_comp)
 
 }

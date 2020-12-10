@@ -32,20 +32,22 @@ ipm <- function(psi, ldpsi, theta, ldtheta, npoint, nsub, ijob, x, dx, y, dy, fo
   # [1] 165.7383
 
   #   if (length(x) != length(w)) { stop("Both vectors should have the same size") }
+  
   sink("log.txt", append = FALSE, split = TRUE)
   .Call("c_emint", psi, ldpsi, theta, ldtheta, npoint, nsub, ijob, x, dx, y, dy, fobj, gap, nvar, keep, ihess, isupres)
   print(list("fobj" = fobj, "lambda" = x, "ijob" = ijob, "ihess" = ihess))
   sink()
   if(ijob<0 || ihess <0){
     n_err <- n_err + 1
-    err_log[n_err] <- list("ijob"=ijob, ihess="ihess", count="count")
-    if(n_err>=5){
+    print("Error detected! Trying to recovery... #err: ")
+    print(n_err)
+    err_log[[n_err]] <- list("ijob"=ijob, "ihess"=ihess, "count"=count)
+    if(n_err>=20){
       sink("error.txt", append = FALSE, split = TRUE)
       print(err_log)
       sink()
-      stop()
+      stop("Unrecoverable error")
     }
-    print("Error detected! Trying to recovery... #err: ", n_err)
   }
   return(list("lambda" = x, "fobj" = fobj, "ijob" = ijob, "ihess" = ihess))
 }
