@@ -53,14 +53,20 @@ multi_prob <- function(y, t, theta, sigma, m) {
     t1 <- system.time({
       m <- cached_mu(theta, t)
     })
+    print("Sim time:")
     print(t1)
   }
 
+  t1 <- system.time({
   #TODO: vectorize this
-  for (i in 1:N) {
-    for (l in 1:K) {
-      mprob[i, l] <- prob(y = y[[i]], sigma = sigma[[i]], m = m[[i, l]])
+    for (i in 1:N) {
+      for (l in 1:K) {
+        mprob[i, l] <- prob(y = y[[i]], sigma = sigma[[i]], m = m[[i, l]])
+      }
     }
-  }
+  })
+  print("prob time:")
+  print(t1)
+  
   return(mprob)
 }
