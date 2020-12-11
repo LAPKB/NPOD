@@ -33,19 +33,37 @@ multi_mu <- function(theta, t) {
     time_points = time_points + 1
   }
 
-
-
+  
   m <- matrix(rep(list(), n_ind * length(theta[1,])), nrow = n_ind, ncol = length(theta[1,]))
   if(simulator == "EQ"){
-    for (k in 1:length(theta[1, ])) {
-      for (sub in 1:n_ind) {
-        # Return format m[i,l] where i->1..Nsub and l->1..size(theta)
-        # Filter the non-needed concentrations (not all 't' are needed)
-        m[[sub, k]] <- model(theta[,k],t[[sub]])
-        #  resData$data[resData$data[1] == sub][-(1:(2 * time_points))][resData$data[resData$data[1] == sub][((time_points + 1):(2 * time_points))] %in% t[[sub]]]
+    # t1<-system.time({
+    #   library(foreach)
+    #   library(doParallel)
+    #   cores = detectCores()
+    #   cl <- makeCluster(cores[1]-1)
+    #   registerDoParallel(cl)
+    #   m <- foreach (k = 1:length(theta[1, ]), .combine=cbind) %:% # nesting operator
+    #     foreach (sub = 1:n_ind, .combine=rbind) %dopar% {
+    #       source("runs/model_neely.R")
+    #       list(model(theta[,k],t[[sub]]))
+    #   }
+    #   stopCluster(cl)
+    # })
+    # t2<-system.time({
+      for (k in 1:length(theta[1, ])) {
+        for (sub in 1:n_ind) {
+          # Return format m[i,l] where i->1..Nsub and l->1..size(theta)
+          # Filter the non-needed concentrations (not all 't' are needed)
+          m[[sub, k]] <- model(theta[,k],t[[sub]])
+          # m[[sub, k]] <- final[sub,k]
+          #  resData$data[resData$data[1] == sub][-(1:(2 * time_points))][resData$data[resData$data[1] == sub][((time_points + 1):(2 * time_points))] %in% t[[sub]]]
 
+        }
       }
-    }
+    # })
+    # print(t1)
+    # print(t2)
+    # stop()
   }else if (length(simulation_functions) > 0) {
     t1 <- system.time({
       for (k in 1:length(theta[1, ])) {
