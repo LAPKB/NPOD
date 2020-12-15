@@ -52,4 +52,4 @@ for (i in 1:number_of_individuals) {
 
 
 
-ans <- NPOD(sim_file, pkdata_file, params, individuals, population_functions, c0=0, c1=0.00003, theta_0=theta_0)
+ans <- NPOD(sim_file, pkdata_file, params, individuals, population_functions, c0=0, c1=0.0001, size_theta0=1000)# theta_0=theta_0)
