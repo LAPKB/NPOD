@@ -41,13 +41,14 @@ ipm <- function(psi, ldpsi, theta, ldtheta, npoint, nsub, ijob, x, dx, y, dy, fo
     n_err <- n_err + 1
     print("Error detected! Trying to recovery... #err: ")
     print(n_err)
-    err_log[[n_err]] <- list("ijob"=ijob, "ihess"=ihess, "count"=count)
-    if(n_err>=20){
-      sink("error.txt", append = FALSE, split = TRUE)
-      print(err_log)
-      sink()
-      stop("Unrecoverable error")
-    }
+    stop()
+    # err_log[[n_err]] <- list("ijob"=ijob, "ihess"=ihess, "count"=count)
+    # if(n_err>=20){
+    #   sink("error.txt", append = FALSE, split = TRUE)
+    #   print(err_log)
+    #   sink()
+    #   stop("Unrecoverable error")
+    # }
   }
   return(list("lambda" = x, "fobj" = fobj, "ijob" = ijob, "ihess" = ihess))
 }
