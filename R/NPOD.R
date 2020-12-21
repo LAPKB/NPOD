@@ -269,6 +269,25 @@ NPOD <- function(sim_file, pkdata_file, params, individuals, population_function
   return(ans)
 }
 
+posterior <- function(res){
+  psi <- ans$PSI #psi[j,i] jth subject, ith support point
+  w <- matrix(ans$w, nrow=nspp)
+
+  nsub <- nrow(psi)
+  nspp <- ncol(psi)
+  post <- matrix(0, nsub, nspp)
+
+  py <- psi %*% w
+  
+  for(j in 1:nsub){
+    for(i in 1:nspp){
+      post[j,i] = psi[j,i] * w[i] / py[j]
+    }
+  }
+  return(post)
+
+}
+
 # P <- PSI_2(y, t, thera, sigma)
 # PYL <- P * w
 

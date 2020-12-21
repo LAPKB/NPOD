@@ -82,5 +82,5 @@ Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma, a, b) {
     print(count)
   }
 
-  return(list("count" = count, "theta" = new_theta, "w" = new_w, "LogLikelihood" = new_F[length(new_F)]))
+  return(list("count" = count, "theta" = new_theta, "w" = new_w, "LogLikelihood" = new_F[length(new_F)], "PSI" = P2))
 }
