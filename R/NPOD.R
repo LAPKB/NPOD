@@ -300,9 +300,7 @@ correlation <- function(res, individuals){
   post<-posterior(res)
   nrvs<-nrow(res$theta)
   params <- c('Age', 'Weight', 'Height')
-  g = data.frame(matrix(vector(), 0, 3,
-                dimnames=list(c(), params)),
-                stringsAsFactors=F)
+
   pop<-matrix(rep(0,(length(params)+nrvs+1)*(length(individuals)*length(res$theta))), ncol=(length(params)+nrvs+1))
   for(i in 1:(length(individuals)*length(res$theta))){
     sub <- ((i - 1) %% length(individuals)) + 1
