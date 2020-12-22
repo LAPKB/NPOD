@@ -321,6 +321,7 @@ correlation <- function(res, individuals){
   names(g) <- c(sprintf("theta[%s]",seq(1:nrvs)), params)
   weighted_corr <- cov.wt(g, wt = pop[,1], cor = TRUE)
   corr_matrix <- weighted_corr$cor
+  return(corr_matrix)
 }
 
 # P <- PSI_2(y, t, thera, sigma)
