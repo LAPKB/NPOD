@@ -271,10 +271,11 @@ NPOD <- function(sim_file, pkdata_file, params, individuals, population_function
 
 posterior <- function(res){
   psi <- ans$PSI #psi[j,i] jth subject, ith support point
-  w <- matrix(ans$w, nrow=nspp)
+  
 
   nsub <- nrow(psi)
   nspp <- ncol(psi)
+  w <- matrix(ans$w, nrow=nspp)
   post <- matrix(0, nsub, nspp)
 
   py <- psi %*% w
@@ -286,6 +287,35 @@ posterior <- function(res){
   }
   return(post)
 
+}
+
+correlation <- function(res, individuals){
+  #TODO: make this general
+  #P(x/Y) = post
+  #Gji<-c(xi,paramsj,prob[j,i]/nrow(prob[j,i]))
+  #g[j=1,i=1] -> (5, 40, 80, 180, 0.3) j -> subject & i -> spp
+  #g[j=2,i=1] -> (5, 4,3 72, 167, 0.28)
+  #g[j=1,i=2] -> (8, 40, 80, 180, 0.36) 
+  #cov[i,j] = sum((xi- mx)(yj - my) * post[j,i]/nrow(post))
+  post<-posterior(res)
+  params <- c('Age', 'Weight', 'Height')
+  g = data.frame(matrix(vector(), 0, 3,
+                dimnames=list(c(), params)),
+                stringsAsFactors=F)
+  pop<-matrix(rep(0,(length(params)+2)*(length(individuals)*length(res$theta))), ncol=(length(params)+2))
+  for(i in 1:(length(individuals)*length(res$theta))){
+    sub <- ((i - 1) %% length(individuals)) + 1
+    spp <- ((i - 1) %/% length(individuals)) + 1
+    pop[i,1]<-post[sub,spp]
+    pop[i,2]<-res$w[spp]
+    for(n in 1:length(params)){
+      pop[i,n+2]<-individuals[[sub]][[tolower(params[n])]]$'value'
+    }
+  }
+  g<-as.data.frame(pop[,2:(length(params)+2)])
+  names(g) <- c("param", params)
+  weighted_corr <- cov.wt(g, wt = pop[,1], cor = TRUE)
+  corr_matrix <- weighted_corr$cor
 }
 
 # P <- PSI_2(y, t, thera, sigma)
