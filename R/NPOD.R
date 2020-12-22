@@ -298,7 +298,7 @@ correlation <- function(res, individuals){
   #g[j=1,i=2] -> (8, 40, 80, 180, 0.36) 
   #cov[i,j] = sum((xi- mx)(yj - my) * post[j,i]/nrow(post))
   post<-posterior(res)
-  nrvs<-1
+  nrvs<-nrow(res$theta)
   params <- c('Age', 'Weight', 'Height')
   g = data.frame(matrix(vector(), 0, 3,
                 dimnames=list(c(), params)),
