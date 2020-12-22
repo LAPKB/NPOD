@@ -298,22 +298,27 @@ correlation <- function(res, individuals){
   #g[j=1,i=2] -> (8, 40, 80, 180, 0.36) 
   #cov[i,j] = sum((xi- mx)(yj - my) * post[j,i]/nrow(post))
   post<-posterior(res)
+  nrvs<-1
   params <- c('Age', 'Weight', 'Height')
   g = data.frame(matrix(vector(), 0, 3,
                 dimnames=list(c(), params)),
                 stringsAsFactors=F)
-  pop<-matrix(rep(0,(length(params)+2)*(length(individuals)*length(res$theta))), ncol=(length(params)+2))
+  pop<-matrix(rep(0,(length(params)+nrvs+1)*(length(individuals)*length(res$theta))), ncol=(length(params)+nrvs+1))
   for(i in 1:(length(individuals)*length(res$theta))){
     sub <- ((i - 1) %% length(individuals)) + 1
     spp <- ((i - 1) %/% length(individuals)) + 1
+
     pop[i,1]<-post[sub,spp]
-    pop[i,2]<-res$w[spp]
-    for(n in 1:length(params)){
-      pop[i,n+2]<-individuals[[sub]][[tolower(params[n])]]$'value'
+    for(n in 1:nrvs){ #inserting the rvs
+      pop[i,n+1]<-res$theta[n,spp]
+    }
+    
+    for(n in 1:length(params)){ #inserting the subject parameters
+      pop[i,n+nrvs+1]<-individuals[[sub]][[tolower(params[n])]]$'value'
     }
   }
-  g<-as.data.frame(pop[,2:(length(params)+2)])
-  names(g) <- c("param", params)
+  g<-as.data.frame(pop[,2:(length(params)+nrvs+1)])
+  names(g) <- c(sprintf("theta[%s]",seq(1:nrvs)), params)
   weighted_corr <- cov.wt(g, wt = pop[,1], cor = TRUE)
   corr_matrix <- weighted_corr$cor
 }
