@@ -7,7 +7,7 @@ library(ospsuite) # PK-Sim R toolbox
   sim_file <- "data/PO SR 150 mg bupropion to human - Connarn et al 2017 - table - scaling factors.pkml"
   params <- vector(mode = "list", length = 2)
   params[[1]] <- c(0, 1, 0) # min
-  params[[2]] <- c(10, 4000, 15) #max
+  params[[2]] <- c(10, 1500, 15) #max
   population_data <- read_csv(population_file)
   number_of_individuals <- length(population_data$ID)
   individuals <- vector(mode = "list", length = number_of_individuals)
@@ -62,4 +62,4 @@ library(ospsuite) # PK-Sim R toolbox
 
 
   
-ans <- NPOD(sim_file, pkdata_file, params, individuals, population_functions, size_theta0=1000)
+ans <- NPOD(sim_file, pkdata_file, params, individuals, population_functions, size_theta0=2000)

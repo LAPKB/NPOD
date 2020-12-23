@@ -289,7 +289,7 @@ posterior <- function(res){
 
 }
 
-correlation <- function(res, individuals){
+correlation <- function(res, individuals, params = c('Age', 'Weight', 'Height')){
   #TODO: make this general
   #P(x/Y) = post
   #Gji<-c(xi,paramsj,prob[j,i]/nrow(prob[j,i]))
@@ -299,10 +299,9 @@ correlation <- function(res, individuals){
   #cov[i,j] = sum((xi- mx)(yj - my) * post[j,i]/nrow(post))
   post<-posterior(res)
   nrvs<-nrow(res$theta)
-  params <- c('Age', 'Weight', 'Height')
 
-  pop<-matrix(rep(0,(length(params)+nrvs+1)*(length(individuals)*length(res$theta))), ncol=(length(params)+nrvs+1))
-  for(i in 1:(length(individuals)*length(res$theta))){
+  pop<-matrix(rep(0,(length(params)+nrvs+1)*(length(individuals)*ncol(res$theta))), ncol=(length(params)+nrvs+1))
+  for(i in 1:(length(individuals)*ncol(res$theta))){
     sub <- ((i - 1) %% length(individuals)) + 1
     spp <- ((i - 1) %/% length(individuals)) + 1
 
