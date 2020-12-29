@@ -321,7 +321,85 @@ correlation <- function(res, individuals, params = c('Age', 'Weight', 'Height'))
   return(corr_matrix)
 }
 
-# P <- PSI_2(y, t, thera, sigma)
+obs_pred_plot <- function(ans,pkdata_file, sim_file, population_functions){
+  
+  pkdata <- read.csv(pkdata_file)
+  number_of_individuals <- ncol(pkdata) - 1
+  time <- vector(mode = "list", length = number_of_individuals)
+  y_old <- vector(mode = "list", length = number_of_individuals)
+
+
+  for (i in 1:number_of_individuals) {
+    time[[i]] <- pkdata[, 1][pkdata[, i + 1] != 999] * 1.0 #* 60
+    y_old[[i]] <- pkdata[, i + 1][pkdata[, i + 1] != 999]
+  }
+  ind <- c(0)
+  for (i in 1:number_of_individuals) { ind[i] = length(y_old[[i]]) != 0 }
+  t <- time[as.logical(ind)]
+  y <- y_old[as.logical(ind)]
+
+  simulator<<-"PKSIM"
+  sim_file<<-sim_file
+  simulation_functions<<-c()
+  population_functions<<-population_functions
+  t1 <- system.time({
+  m <- cached_mu(ans$theta, t)
+  })
+  # plot(c(0, max(unlist(t))), c(0, max(unlist(y))), col = "white", xlab = "Time (m)", ylab = "Concentration")
+  plot(c(0, max(unlist(y))), c(0, max(unlist(m))), type = "l", col = "black", xlab = "Observed", ylab = "Predicted")
+  total_wavg = c()
+  for (l in 1:length(y)) {
+    # lines(t[[l]], y[[l]], col = "#40687A")
+    # points(t[[l]], y[[l]], col = "#40687A")
+    wavg = rep(0, length(m[[l, 1]])) #matrix(rep(list(), length(ans$w)), nrow = 22, ncol = 1)
+    for (sup in 1:length(ans$w)) {
+      wavg = wavg + m[[l, sup]] * ans$w[sup]
+    }
+    # lines(t[[l]], wavg, col = "red")
+    # points(t[[l]], wavg, col = "red")
+    points(y[[l]], wavg, pch = 15)
+    total_wavg[[l]] = wavg
+  }
+  data <- data.frame(x = unlist(y), y = unlist(total_wavg))
+  line <- lm(formula = y ~ x, data = data)
+}
+
+marginals_plot <- function(theta){
+  # library(ggplot2)
+
+  # # # Create data
+  # data1 <- data.frame(x = ans$theta[1,], y = ans$w)
+  # data2 <- data.frame(x = ans$theta[2,], y = ans$w)
+  # data3 <- data.frame(x = ans$theta[3,], y = ans$w)
+  # # # data2 <- data.frame(x = c(1.571292659, 1.684000469, 1.897188772, 1.334296808, 3.507619028, 1.965186011, 1.654506763, 2.959986382, 1.651944217, 1.684047026, 1.994727369, 1.749076709, 1.944705938, 2.022695536, 1.878534566, 0.122129378, 0.104367722, 0.134260968, 0.063060173, 0.066073962, 0.116931539, 0.104979233, 0.116084543, 0.073854101, 0.097529239, 0.083336113, 0.116909087, 0.147036329, 0.126209817, 0.136675505), y = rep(1/30,30))
+
+
+  # # # # Plot
+  # p1 <- ggplot(data1, aes(x = x, y = y)) +
+  # geom_point() +
+  # geom_segment(aes(x = x, xend = x, y = 0, yend = y)) +
+  # ggtitle("Marginals - theta[1] (Scalefx)") +
+  # xlab("Liver Enzyme|Reference concentration") +
+  # ylab("Weight")
+
+  # p2 <- ggplot(data2, aes(x = x, y = y)) +
+  # geom_point() +
+  # geom_segment(aes(x = x, xend = x, y = 0, yend = y)) +
+  # ggtitle("Marginals - theta[2] (Scalefy)") +
+  # xlab("Liver Enzyme|Reference concentration") +
+  # ylab("Weight")
+
+  # p3 <- ggplot(data3, aes(x = x, y = y)) +
+  # geom_point() +
+  # geom_segment(aes(x = x, xend = x, y = 0, yend = y)) +
+  # ggtitle("Marginals - theta[3] (Liver intestinal CL ref)") +
+  # xlab("Liver Enzyme|Reference concentration") +
+  # ylab("Weight")
+
+  # gridExtra::grid.arrange(p1, p2, p3, ncol = 3)
+}
+
+# P <- PSI_2(y, t, theta, sigma)
 # PYL <- P * w
 
 # Dfun <- function(.theta_parameter) { D(.theta_parameter, y, t, sigma, PYL) }
