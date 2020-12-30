@@ -7,7 +7,7 @@ pkdata_file <- "data/Bupropion150PKdata_fixed.csv"
 sim_file <- "data/PO SR 150 mg bupropion to human - Connarn et al 2017 - table - scaling factors.pkml"
 params <- vector(mode = "list", length = 2)
 params[[1]] <- c(0, 1, 0) # min
-params[[2]] <- c(10, 20000, 100) #max
+params[[2]] <- c(10, 20, 100) #max
 population_data <- read_csv(population_file)
 number_of_individuals <- length(population_data$ID)
 individuals <- vector(mode = "list", length = number_of_individuals)
@@ -62,4 +62,4 @@ population_functions <- c(
 
 
   
-ans <- NPOD(sim_file, pkdata_file, params, individuals, population_functions, c1=0.01, c2=0.01, size_theta0=500) #c1=0.03, c2=0.05,
+ans <- NPOD(sim_file, pkdata_file, params, individuals, population_functions, c1=0.03, c2=0.01, size_theta0=500) #c1=0.03, c2=0.05,
