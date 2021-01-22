@@ -8,7 +8,7 @@ Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma, a, b) {
   ind1 <- c(0)
   ind2 <- c(0)
 
-  options <- optimset(MaxFunEvals = 2000000000, TolX = 1e-14, MaxIter = 10, TolFun = 1e-14)
+  options <- neldermead::optimset(MaxFunEvals = 2000000000, TolX = 1e-14, MaxIter = 10, TolFun = 1e-14)
   #  old_F <-c()
   new_F <- c()
   #  old_F[count] <- F1
@@ -68,7 +68,7 @@ Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma, a, b) {
       #Dtheta <- function(.theta) { D(.theta, y, t, sigma, pyl, individuals) }
       multi_Dtheta <- function(.theta) {-1 * multi_D(.theta, y, t, sigma, pyl) }
       # fun <- function(.theta_parameter) {-1 * Dtheta(.theta_parameter) }
-      cand_theta <- fminsearch(multi_Dtheta, new_theta[, l], options)
+      cand_theta <- neldermead::fminsearch(multi_Dtheta, new_theta[, l], options)
       print(cand_theta)
 
       new_theta <- prune(new_theta, cand_theta$optbase$xopt, theta_d, a, b)

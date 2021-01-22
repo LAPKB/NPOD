@@ -1,9 +1,10 @@
-
+#' export
+#' @useDynLib ipm_v2 
 ipm <- function(psi, ldpsi, theta, ldtheta, npoint, nsub, ijob, x, dx, y, dy, fobj, gap, nvar, keep, ihess, isupres) {
 
   #Windows
   #load fortran ipm library
-  dyn.load("ipm_v2.dll")
+  # dyn.load(system.file("lib/ipm_v2.dll", package="NPOD"))
 
   #Linux/MAC
   #dyn.load("ipm.so")
