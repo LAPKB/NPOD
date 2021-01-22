@@ -1,8 +1,9 @@
 rm(list = ls())
-setwd("R")
-source("NPOD.R")
-
-pkdata_file <- "data/data_1comp_neely.csv"
+# setwd("R")
+#devtools::install(args="--no-multiarch")
+# source("NPOD.R")
+library(NPOD)
+pkdata_file <- "inst/data/data_1comp_neely.csv"
 sim_file <- ""
 model <- function(theta,t){
     #t<c(0.5,1,2,3,4,5,...)
@@ -16,7 +17,11 @@ params[[1]] <- c(0.001, 50) # min
 params[[2]] <- c(2, 250) #max
 # population_data <- read_csv(population_file)
 individuals <- seq(from=1, to=51)
-theta_0<-matrix(unlist(read.csv("test.csv")),nrow=2)
+# theta_0<-matrix(unlist(read.csv("test.csv")),nrow=2)
 t1<- system.time({
     ans <- NPOD(sim_file, pkdata_file, params, individuals, model=model, c0=0, c1=0.1, size_theta0= 100)
 })
+
+
+
+
