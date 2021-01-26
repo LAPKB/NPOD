@@ -48,7 +48,7 @@ NPOD <- function(sim_file, pkdata_file, params, individuals, population_function
   # # Initialize list of individuals
   # number_of_individuals <- length(population_data$IndividualId)
   number_of_individuals <- length(individuals)
-  pkdata <- readxl::read.csv(pkdata_file)
+  pkdata <- read.csv(pkdata_file)
   
   time <- vector(mode = "list", length = number_of_individuals)
   y_old <- vector(mode = "list", length = number_of_individuals)
