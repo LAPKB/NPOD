@@ -1,6 +1,6 @@
 rm(list = ls())
-setwd("R")
-source("NPOD.R")
+setwd("inst")
+library(NPOD)
 library(ospsuite) # PK-Sim R toolbox
 population_file <- "data/bupropion baseline demographics - to share - converted to metric units.csv"
 pkdata_file <- "data/Bupropion150PKdata_fixed.csv"
@@ -8,7 +8,7 @@ sim_file <- "data/PO SR 150 mg bupropion to human - Connarn et al 2017 - table -
 params <- vector(mode = "list", length = 2)
 params[[1]] <- c(0, 0, 0) # min
 params[[2]] <- c(10, 1000, 1000) #max
-population_data <- read_csv(population_file)
+population_data <- readr::read_csv(population_file)
 number_of_individuals <- length(population_data$ID)
 individuals <- vector(mode = "list", length = number_of_individuals)
 for (i in 1:number_of_individuals) {
@@ -62,4 +62,5 @@ population_functions <- c(
 
 
   
-ans <- NPOD(sim_file, pkdata_file, params, individuals, population_functions, c1=0.03, c2=0.01, theta_0=theta0) #c1=0.03, c2=0.05,
+ans <- NPOD(sim_file, pkdata_file, params, individuals, population_functions, c1=0.03, c2=0.01) #c1=0.03, c2=0.05,
+ans <- readRDS("bup2_ans_fixed.rds")

@@ -2,6 +2,7 @@ rm(list = ls())
 # setwd("R")
 #devtools::install(args="--no-multiarch")
 # source("NPOD.R")
+devtools::install_github("LAPKB/NPOD", INSTALL_opts=c("--no-multiarch"), auth_token="df33401dee91cd2f21076cdea0e5a70096b72463")
 library(NPOD)
 pkdata_file <- "inst/data/data_1comp_neely.csv"
 sim_file <- ""
@@ -21,6 +22,7 @@ individuals <- seq(from=1, to=51)
 t1<- system.time({
     ans <- NPOD(sim_file, pkdata_file, params, individuals, model=model, c0=0, c1=0.1, size_theta0= 100)
 })
+
 
 
 
