@@ -17,9 +17,9 @@ multi_mu <- function(theta, t) {
     if (length(simulation_functions) > 0) {
       file.copy("test.csv", "population.csv")
     } else {
-      lines = read_lines(file("test.csv"))
+      lines = readr::read_lines(file("test.csv"))
       lines = .rep_population(lines, length(theta[1,]))
-      write_lines(lines, "population.csv")
+      readr::write_lines(lines, "population.csv")
     }
     population <- loadPopulation("population.csv")
     pop_size <- length(population$allIndividualIds)
