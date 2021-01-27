@@ -63,4 +63,4 @@ population_functions <- c(
 
   
 ans <- NPOD(sim_file, pkdata_file, params, individuals, population_functions, c1=0.03, c2=0.01) #c1=0.03, c2=0.05,
-ans <- readRDS("bup2_ans_fixed.rds")
+# ans <- readRDS("bup2_ans_fixed.rds")
