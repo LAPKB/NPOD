@@ -263,7 +263,7 @@ NPOD <- function(sim_file, pkdata_file, params, individuals, population_function
   theta <- ans$theta
   w <- ans$w
   logLikelihood <- ans$logLikelihood
-  forget(cached_mu)
+  memoise::forget(cached_mu)
   return(ans)
 }
 
