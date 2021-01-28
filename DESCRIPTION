@@ -21,5 +21,6 @@ Imports:    memoise,
             tidyr,
             neldermead,
             DiceDesign,
-            readxl
+            readxl,
+            cachem
 
