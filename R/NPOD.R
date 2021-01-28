@@ -39,11 +39,11 @@ NPOD <- function(sim_file, pkdata_file, params, individuals, population_function
   if(not(is.null(cache_folder_name))){
     npod_cache <<- cachem::cache_disk(cache_folder_name)
   }
-
-  sum2 <- memoise::memoise(function(x){
-    print(x)
-    x+2
-  }, cache = npod_cache)
+  
+  # sum2 <- memoise::memoise(function(x){
+  #   print(x)
+  #   x+2
+  # }, cache = npod_cache)
 
   ## Error global variables
   n_err <<- 0
