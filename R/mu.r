@@ -152,7 +152,7 @@ multi_mu <- function(theta, t) {
   return(m)
 }
 
-cached_mu <- memoise::memoise(multi_mu, cache=npod_cache)
+cached_mu <- memoise::memoise(multi_mu)#, cache=npod_cache)
 
 # mu <- function(theta, t, individual_chars) {
 #   #Ok, I have a problem, theta[2] and theta[3] are parameters that modify the simulation
