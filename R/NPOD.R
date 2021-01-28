@@ -333,7 +333,7 @@ posterior_observations <- function(ans, posterior){
   line <- lm(formula = y ~ x, data = data)
 
 }
-
+#'@export
 correlation <- function(res, individuals, params = c('Age', 'Weight', 'Height')){
   #TODO: make this general
   #P(x/Y) = post
