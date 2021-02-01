@@ -345,7 +345,9 @@ correlation <- function(res, individuals, params = c('Age', 'Weight', 'Height'))
   post<-posterior(res)
   nrvs<-nrow(res$theta)
 
-  pop<-matrix(rep(0,(length(params)+nrvs+1)*(length(individuals)*ncol(res$theta))), ncol=(length(params)+nrvs+1))
+  # cyp_info<-matrix(c(1,1,1,1,1,1,2,1,2,1,3,4,1,3,4,3,1,1,1,1,1,5,5,5,4,5,4,1,1,6,5,1,1,2,2,2,2,2,2,3,4,1,2,2,1,2,2,2,2,2,2,2,2,2,2,2,2,1,2,1,2,2,2,2), ncol=2)
+
+  pop<-matrix(rep(0,(length(params)+nrvs+1+0)*(length(individuals)*ncol(res$theta))), ncol=(length(params)+nrvs+1+0))
   for(i in 1:(length(individuals)*ncol(res$theta))){
     sub <- ((i - 1) %% length(individuals)) + 1
     spp <- ((i - 1) %/% length(individuals)) + 1
@@ -358,9 +360,15 @@ correlation <- function(res, individuals, params = c('Age', 'Weight', 'Height'))
     for(n in 1:length(params)){ #inserting the subject parameters
       pop[i,n+nrvs+1]<-individuals[[sub]][[tolower(params[n])]]$'value'
     }
+
+    # for(n in 1:2){ #inserting the subject parameters
+    #   pop[i,n+nrvs+1+length(params)]<-cyp_info[sub,n]
+    # }
+
+
   }
-  g<-as.data.frame(pop[,2:(length(params)+nrvs+1)])
-  names(g) <- c(sprintf("theta[%s]",seq(1:nrvs)), params)
+  g<-as.data.frame(pop[,2:(length(params)+nrvs+1+0)])
+  names(g) <- c(sprintf("theta%s",seq(1:nrvs)), params)#, c("CYP2B6", "CYP2C19"))
   weighted_corr <- cov.wt(g, wt = pop[,1], cor = TRUE)
   corr_matrix <- weighted_corr$cor
   return(corr_matrix)
