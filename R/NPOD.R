@@ -36,7 +36,7 @@ NPOD <- function(sim_file, pkdata_file, params, individuals, population_function
     stop()
   }
   npod_cache <<- cachem::cache_mem()
-  if(not(is.null(cache_folder_name))){
+  if(!is.null(cache_folder_name)){
     npod_cache <<- cachem::cache_disk(cache_folder_name)
   }
   
