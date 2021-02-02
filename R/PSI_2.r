@@ -4,7 +4,7 @@ PSI_2 <- function(y, t, theta, sigma) {
   print("PSI")
 
 
-  library(bigstatsr)
+  # library(bigstatsr)
 
 
   N <- length(y)

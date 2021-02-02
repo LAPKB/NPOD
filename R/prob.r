@@ -42,11 +42,11 @@ multi_prob <- function(y, t, theta, sigma, m) {
   }, error = function(e) {
     length(theta)
   })
-  mprob <- matrix(0, N, K)
+  
 
   # IF ANY ELEMENT IN THETA IS NEGATIVE ALL THE PROB ARE ZERO ??????????
   if (sum(theta <= 0) >= 1) {
-    return(mprob)
+    return(matrix(0, N, K))
   }
 
   if (missing(m)) {
@@ -56,8 +56,9 @@ multi_prob <- function(y, t, theta, sigma, m) {
     print("Sim time:")
     print(t1)
   }
-
+  
   t1 <- system.time({
+  mprob <- matrix(0, N, K)
   #TODO: vectorize this
     for (i in 1:N) {
       for (l in 1:K) {
