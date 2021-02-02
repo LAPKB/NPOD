@@ -39,6 +39,7 @@ NPOD <- function(sim_file, pkdata_file, params, individuals, population_function
   if(!is.null(cache_folder_name)){
     npod_cache <<- cachem::cache_disk(cache_folder_name)
   }
+  cached_mu <<- memoise::memoise(multi_mu, cache=npod_cache)
   
   # sum2 <- memoise::memoise(function(x){
   #   print(x)
