@@ -17,7 +17,7 @@
 # source("prob.r")
 
 #'@export
-NPOD <- function(sim_file, pkdata_file, params, individuals, population_functions=c(), simulation_functions=c(), noise=F, model=NULL, c0=0.5, c1=0.1, c2=0, ncycles=Inf, theta_0=NULL,size_theta0=NULL, cache_folder_name=NULL) {
+NPOD <- function(sim_file, pkdata_file, params, individuals, population_functions=c(), simulation_functions=c(), noise=F, model=NULL, c0=0.5, c1=0.1, c2=0, ncycles=Inf, MaxIter=10, theta_0=NULL,size_theta0=NULL, cache_folder_name=NULL) {
 
   #TODO: WIP global variables.
   sim_file <<- sim_file
@@ -27,6 +27,7 @@ NPOD <- function(sim_file, pkdata_file, params, individuals, population_function
   simulation_functions <<- simulation_functions
   population_functions <<- population_functions
   ncycles <<- ncycles
+  MaxIter <<- MaxIter
 
   if(is.null(model)){
     simulator <<- "PKSIM"
