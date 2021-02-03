@@ -23,11 +23,12 @@ prob <- function(y, t, theta, sigma, individual, m) {
   }
   z <- (y - m) ^ 2
   pr <- rep(0, j)
-  for (i in 1:j) {
+  # for (i in 1:j) {
 
-    pr[i] <- (1 / (sqrt(2 * pi) * sigma[i])) * exp(-(1 / (2 * (sigma[i]) ^ (2)) * z[i]))
+  #   pr[i] <- (1 / (sqrt(2 * pi) * sigma[i])) * exp(-(1 / (2 * (sigma[i]) ^ (2)) * z[i]))
 
-  }
+  # }
+  pr <- (1 / (sqrt(2 * pi) * sigma)) * exp(-(1 / (2 * (sigma) ^ (2)) * z))
   prob <- prod(pr)
   #  prob <- (1 / (sqrt(2 * pi) * sigma)) ^ (j) * exp(-(1 / (2 * (sigma) ^ (2))) * sum(z))
   return(prob)

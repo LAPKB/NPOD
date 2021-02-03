@@ -60,6 +60,11 @@ Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma, a, b) {
     if (abs(new_F[count + 2] - new_F[count + 1]) <= theta_F) {
       break
     }
+
+    if(count>=ncycles){
+      print("Maximum number of cycles reached")
+      break
+    }
     #print(abs(new_F[count+2] - new_F[count+1]))
     K <- length(new_theta[1,])
     pyl <- P2 %*% new_w
