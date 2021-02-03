@@ -7,6 +7,7 @@ Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma, a, b) {
 
   ind1 <- c(0)
   ind2 <- c(0)
+  # MaxIter=10
 
   options <- neldermead::optimset(MaxFunEvals = 2000000000, TolX = 1e-14, MaxIter = 10, TolFun = 1e-14)
   #  old_F <-c()
