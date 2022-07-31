@@ -42,7 +42,7 @@ NPOD <- function(sim_file, pkdata_file, params, individuals, population_function
     npod_cache <<- cachem::cache_disk(cache_folder_name)
   }
   cached_mu <<- memoise::memoise(multi_mu, cache=npod_cache)
-  
+
   # sum2 <- memoise::memoise(function(x){
   #   print(x)
   #   x+2
@@ -61,7 +61,7 @@ NPOD <- function(sim_file, pkdata_file, params, individuals, population_function
   # number_of_individuals <- length(population_data$IndividualId)
   number_of_individuals <- length(individuals)
   pkdata <- read.csv(pkdata_file)
-  
+
   time <- vector(mode = "list", length = number_of_individuals)
   y_old <- vector(mode = "list", length = number_of_individuals)
   sigma_old <- vector(mode = 'list', length = number_of_individuals)
@@ -84,7 +84,7 @@ NPOD <- function(sim_file, pkdata_file, params, individuals, population_function
   }
   min_y <- min(unlist(y_old))
   for (i in 1:number_of_individuals) {
-     sigma_old[[i]] <- (c0 * min_y + c1 * y_old[[i]] + c2)  
+    sigma_old[[i]] <- (c0 * min_y + c1 * y_old[[i]] + c2)
   }
 
   ind <- c(0)
@@ -94,10 +94,10 @@ NPOD <- function(sim_file, pkdata_file, params, individuals, population_function
   y <- y_old[as.logical(ind)]
   sigma <- sigma_old[as.logical(ind)]
 
-  
+
   if(simulator=="PKSIM"){
 
-  
+
     characteristics <- individuals
 
     indiv <- c()
@@ -153,10 +153,10 @@ NPOD <- function(sim_file, pkdata_file, params, individuals, population_function
       # theta_0 <- a + t(runif.faure(500, length(a))$design) * (b - a)
       theta_0 <- a + t(DiceDesign::runif.faure(size_theta0, length(a))$design) * (b - a)
     }
-  # theta_0 <- matrix(c(0.146738996, 0.123293797, 3.170923764, 1.979605999, 0.094835319, 1.878534566, 0.108820894, 1.664082432, 2.761443638, 2.287738879, 1.897188772, 0.097035077, 0.082756603, 0.086893976, 2.156157535, 1.735379708, 3.847188377, 1.994727369, 1.531496725, 0.102180699, 2.880964641, 0.073854101, 1.27542639, 0.108035295, 2.363376581, 0.05887653, 1.651944217, 0.161762432, 1.850065187, 0.133951076, 2.373573413, 0.126209817, 0.085673368, 2.586016226, 0.173492127, 0.093789337, 0.113822807, 0.136675505, 1.593700177, 1.880331976, 1.212728388, 0.063362327, 0.116909087, 3.507619028, 2.200653328, 0.12056741, 1.749076709, 2.329988218, 0.110024431, 0.063060173, 0.134447024, 0.083234464, 3.296153545, 0.234944034, 0.134260968, 1.66618999, 0.117223628, 0.100846702, 2.616496816, 0.13987635, 1.966206983, 2.814812391, 1.516704054, 0.064970702, 0.096454675, 1.334296808, 3.098095951, 1.839557095, 0.089748738, 1.654506763, 0.089800378, 0.094357268, 0.124507898, 0.093186748, 0.101272563, 2.959986382, 0.083584167, 2.329923151, 1.4784192, 0.122879261, 1.450412959, 1.924533902, 0.089720051, 0.065944486, 0.074500112, 2.400025537, 1.623319666, 0.069790582, 0.104777191, 0.142460888, 0.078014023, 1.99329036, 0.135619964, 0.123392348, 1.327600402, 2.577439989, 0.160399272, 1.571292659, 2.203917519, 1.573226289, 0.066073962, 2.081737686, 0.084480469, 1.601815667, 2.573740598, 2.492078269, 2.032550129, 0.101991266, 0.098959164, 0.083511758, 1.598018991, 0.115760403, 2.441406605, 0.089998514, 1.684047026, 0.084991178, 1.723409162, 1.529295859, 0.118728247, 2.249698147, 0.122704478, 0.116931539, 1.992246518, 2.073065166, 0.108431, 1.232511342, 2.531792589, 1.08485316, 2.217082683, 2.136590466, 2.479191796, 0.168109114, 0.114148445, 0.146531275, 0.123083234, 0.09970523, 1.808488675, 1.273822394, 1.493883115, 0.146671258, 0.084866643, 2.372305577, 0.097529239, 0.122129378, 0.119630258, 1.741349377, 0.107479869, 0.093433982, 2.022695536, 0.075270096, 0.065651944, 0.121109817, 1.682462298, 2.35685709, 1.565529003, 3.592710077, 1.685880899, 1.84814825, 0.077200107, 3.17956809, 2.857667209, 0.126723019, 0.110541788, 3.017453382, 0.082663184, 2.14935597, 1.300242155, 2.597365515, 1.684000469, 1.944705938, 2.17734754, 1.919464244, 0.124326593, 0.08957695, 0.129333766, 0.094497707, 0.147036329, 1.319235805, 0.083336113, 0.093260834, 2.040276806, 1.575005782, 0.116084543, 0.057651493, 0.100180177, 0.135309086, 0.104367722, 1.965186011, 0.091088188, 2.525448909, 0.108618042, 0.109611659, 0.104979233, 1.783574019, 0.134260195, 1.688358128, 1.877636412, 1.822295191, 0.080955547, 2.294027773), nrow=1)
-  # theta_0 <- matrix(c(1.571292659, 1.684000469, 1.897188772, 1.334296808, 3.507619028, 1.965186011, 1.654506763, 2.959986382, 1.651944217, 1.684047026, 1.994727369, 1.749076709, 1.944705938, 2.022695536, 1.878534566, 0.122129378, 0.104367722, 0.134260968, 0.063060173, 0.066073962, 0.116931539, 0.104979233, 0.116084543, 0.073854101, 0.097529239, 0.083336113, 0.116909087, 0.147036329, 0.126209817, 0.136675505), nrow = 1)
+    # theta_0 <- matrix(c(0.146738996, 0.123293797, 3.170923764, 1.979605999, 0.094835319, 1.878534566, 0.108820894, 1.664082432, 2.761443638, 2.287738879, 1.897188772, 0.097035077, 0.082756603, 0.086893976, 2.156157535, 1.735379708, 3.847188377, 1.994727369, 1.531496725, 0.102180699, 2.880964641, 0.073854101, 1.27542639, 0.108035295, 2.363376581, 0.05887653, 1.651944217, 0.161762432, 1.850065187, 0.133951076, 2.373573413, 0.126209817, 0.085673368, 2.586016226, 0.173492127, 0.093789337, 0.113822807, 0.136675505, 1.593700177, 1.880331976, 1.212728388, 0.063362327, 0.116909087, 3.507619028, 2.200653328, 0.12056741, 1.749076709, 2.329988218, 0.110024431, 0.063060173, 0.134447024, 0.083234464, 3.296153545, 0.234944034, 0.134260968, 1.66618999, 0.117223628, 0.100846702, 2.616496816, 0.13987635, 1.966206983, 2.814812391, 1.516704054, 0.064970702, 0.096454675, 1.334296808, 3.098095951, 1.839557095, 0.089748738, 1.654506763, 0.089800378, 0.094357268, 0.124507898, 0.093186748, 0.101272563, 2.959986382, 0.083584167, 2.329923151, 1.4784192, 0.122879261, 1.450412959, 1.924533902, 0.089720051, 0.065944486, 0.074500112, 2.400025537, 1.623319666, 0.069790582, 0.104777191, 0.142460888, 0.078014023, 1.99329036, 0.135619964, 0.123392348, 1.327600402, 2.577439989, 0.160399272, 1.571292659, 2.203917519, 1.573226289, 0.066073962, 2.081737686, 0.084480469, 1.601815667, 2.573740598, 2.492078269, 2.032550129, 0.101991266, 0.098959164, 0.083511758, 1.598018991, 0.115760403, 2.441406605, 0.089998514, 1.684047026, 0.084991178, 1.723409162, 1.529295859, 0.118728247, 2.249698147, 0.122704478, 0.116931539, 1.992246518, 2.073065166, 0.108431, 1.232511342, 2.531792589, 1.08485316, 2.217082683, 2.136590466, 2.479191796, 0.168109114, 0.114148445, 0.146531275, 0.123083234, 0.09970523, 1.808488675, 1.273822394, 1.493883115, 0.146671258, 0.084866643, 2.372305577, 0.097529239, 0.122129378, 0.119630258, 1.741349377, 0.107479869, 0.093433982, 2.022695536, 0.075270096, 0.065651944, 0.121109817, 1.682462298, 2.35685709, 1.565529003, 3.592710077, 1.685880899, 1.84814825, 0.077200107, 3.17956809, 2.857667209, 0.126723019, 0.110541788, 3.017453382, 0.082663184, 2.14935597, 1.300242155, 2.597365515, 1.684000469, 1.944705938, 2.17734754, 1.919464244, 0.124326593, 0.08957695, 0.129333766, 0.094497707, 0.147036329, 1.319235805, 0.083336113, 0.093260834, 2.040276806, 1.575005782, 0.116084543, 0.057651493, 0.100180177, 0.135309086, 0.104367722, 1.965186011, 0.091088188, 2.525448909, 0.108618042, 0.109611659, 0.104979233, 1.783574019, 0.134260195, 1.688358128, 1.877636412, 1.822295191, 0.080955547, 2.294027773), nrow=1)
+    # theta_0 <- matrix(c(1.571292659, 1.684000469, 1.897188772, 1.334296808, 3.507619028, 1.965186011, 1.654506763, 2.959986382, 1.651944217, 1.684047026, 1.994727369, 1.749076709, 1.944705938, 2.022695536, 1.878534566, 0.122129378, 0.104367722, 0.134260968, 0.063060173, 0.066073962, 0.116931539, 0.104979233, 0.116084543, 0.073854101, 0.097529239, 0.083336113, 0.116909087, 0.147036329, 0.126209817, 0.136675505), nrow = 1)
   }
-  
+
   theta_0
 
 
@@ -179,7 +179,7 @@ NPOD <- function(sim_file, pkdata_file, params, individuals, population_function
   #   points(t[[l]], y[[l]], col = "blue")
   #   text(t[[l]][[10]]+50, y[[l]][[10]],sprintf("%f",w[l-15]), cex=.5)
   #   }
-    
+
   # }
 
 
@@ -268,19 +268,19 @@ NPOD <- function(sim_file, pkdata_file, params, individuals, population_function
 
 
 
-
   ans <- Dopt(y, t, theta_0, theta_F, theta_d, sigma, a, b)
 
-  count <- ans$count
+  counter <- ans$count
   theta <- ans$theta
   w <- ans$w
   logLikelihood <- ans$logLikelihood
   return(ans)
 }
 
-posterior <- function(res){
+#'@export
+posterior <- function(ans){
   psi <- ans$PSI #psi[j,i] jth subject, ith support point
-  
+
 
   nsub <- nrow(psi)
   nspp <- ncol(psi)
@@ -288,7 +288,7 @@ posterior <- function(res){
   post <- matrix(0, nsub, nspp)
 
   py <- psi %*% w
-  
+
   for(j in 1:nsub){
     for(i in 1:nspp){
       post[j,i] = psi[j,i] * w[i] / py[j]
@@ -319,13 +319,13 @@ posterior_observations <- function(ans, posterior){
   simulation_functions<<-c()
   population_functions<<-population_functions
   t1 <- system.time({
-  m <- cached_mu(ans$theta, t)
+    m <- cached_mu(ans$theta, t)
   })
 
   plot(c(0, max(unlist(y))), c(0, max(unlist(m))), type = "l", col = "black", xlab = "Observed", ylab = "posterior")
   total_wavg = c()
   for (l in 1:length(y)) {
-    wavg = rep(0, length(nrow(m))) 
+    wavg = rep(0, length(nrow(m)))
     for (sup in 1:length(ncol(m))) {
       wavg = wavg + m[[l, sup]] * posterior[l, sup]
     }
@@ -336,14 +336,15 @@ posterior_observations <- function(ans, posterior){
   line <- lm(formula = y ~ x, data = data)
 
 }
+
 #'@export
-correlation <- function(res, individuals, params = c('Age', 'Weight', 'Height')){
+get_weighted_points <- function(res, individuals, params = c('Age', 'Weight', 'Height')){
   #TODO: make this general
   #P(x/Y) = post
   #Gji<-c(xi,paramsj,prob[j,i]/nrow(prob[j,i]))
   #g[j=1,i=1] -> (5, 40, 80, 180, 0.3) j -> subject & i -> spp
   #g[j=2,i=1] -> (5, 4,3 72, 167, 0.28)
-  #g[j=1,i=2] -> (8, 40, 80, 180, 0.36) 
+  #g[j=1,i=2] -> (8, 40, 80, 180, 0.36)
   #cov[i,j] = sum((xi- mx)(yj - my) * post[j,i]/nrow(post))
   post<-posterior(res)
   nrvs<-nrow(res$theta)
@@ -359,7 +360,7 @@ correlation <- function(res, individuals, params = c('Age', 'Weight', 'Height'))
     for(n in 1:nrvs){ #inserting the rvs
       pop[i,n+1]<-res$theta[n,spp]
     }
-    
+
     for(n in 1:length(params)){ #inserting the subject parameters
       pop[i,n+nrvs+1]<-individuals[[sub]][[tolower(params[n])]]$'value'
     }
@@ -370,11 +371,23 @@ correlation <- function(res, individuals, params = c('Age', 'Weight', 'Height'))
 
 
   }
-  g<-as.data.frame(pop[,2:(length(params)+nrvs+1+0)])
-  names(g) <- c(sprintf("theta%s",seq(1:nrvs)), params)#, c("CYP2B6", "CYP2C19"))
-  weighted_corr <- cov.wt(g, wt = pop[,1], cor = TRUE)
-  corr_matrix <- weighted_corr$cor
-  return(corr_matrix)
+  points<-as.data.frame(pop[,2:(length(params)+nrvs+1+0)])
+  names(points) <- c(sprintf("theta%s",seq(1:nrvs)), params)#, c("CYP2B6", "CYP2C19"))
+  return(list(points = points,weights = pop[,1]))
+}
+
+#'@export
+correlation <- function(res, individuals, params = c('Age', 'Weight', 'Height')){
+  weighted_points <- get_weighted_points(res, individuals, params = c('Age', 'Weight', 'Height'))
+  weighted_cor <- cov.wt(weighted_points$points, wt = weighted_points$weights, cor = TRUE)
+  return(weighted_cor)
+}
+
+#'@export
+covariance <- function(res, individuals, params = c('Age', 'Weight', 'Height')){
+  weighted_points <- get_weighted_points(res, individuals, params = c('Age', 'Weight', 'Height'))
+  weighted_cov <- cov.wt(weighted_points$points, wt = weighted_points$weights, cor = FALSE)
+  return(weighted_cov)
 }
 
 obs_pred_plot <- function(ans,pkdata_file, sim_file, population_functions){
@@ -401,7 +414,7 @@ obs_pred_plot <- function(ans,pkdata_file, sim_file, population_functions){
   simulation_functions<<-c()
   population_functions<<-population_functions
   t1 <- system.time({
-  m <- cached_mu(theta, t)
+    m <- cached_mu(theta, t)
   })
   # plot(c(0, max(unlist(t))), c(0, max(unlist(y))), col = "white", xlab = "Time (m)", ylab = "Concentration")
   plot(c(0, max(unlist(y))), c(0, max(unlist(m))), type = "l", col = "black", xlab = "Observed", ylab = "Predicted")
@@ -450,7 +463,7 @@ spaghetti_plot <-function(){
   # #plot(c(0, 1.5), c(0, 1.5), type = "l", col = "black", xlab = "Observed", ylab = "Predicted")
   # total_wavg = c()
   # for (l in 1:length(y)) {
-    
+
   #   lines(t[[l]], y[[l]], col = "#40687A")
   #   points(t[[l]], y[[l]], col = "#40687A")
   #   wavg = rep(0, length(m[[l, 1]])) #matrix(rep(list(), length(ans$w)), nrow = 22, ncol = 1)
@@ -458,25 +471,25 @@ spaghetti_plot <-function(){
   #     lines(t[[l]], m[[l, sup]], col = "red")
   #     points(t[[l]],m[[l, sup]], col = "red")
   #   }
-    
+
   # }
   #This seems to be too nested and causing a stack overflow.
   maxw<-max(w)
   minw<-min(w)
   normw <- (w-minw)/(maxw-minw)
-  reduce(1:length(y), function(x,i){ 
+  reduce(1:length(y), function(x,i){
     reduce(1:length(w), function(y, j){
-        y + geom_line(data = data.frame(t=t[[i]], y=m[[i, j]], normw=normw[j]), aes(x=t, y=y), alpha = normw[j])#, color=normw), size = 0.6, alpha = normw[j])
+      y + geom_line(data = data.frame(t=t[[i]], y=m[[i, j]], normw=normw[j]), aes(x=t, y=y), alpha = normw[j])#, color=normw), size = 0.6, alpha = normw[j])
     },
     .init=x + geom_line(data = data.frame(t=t[[i]], y=y[[i]]), aes(x=t, y=y, color="red"), size=1)
-    )  
+    )
   },
   .init=ggplot()
   ) + dark_theme_linedraw() +
-  theme(panel.grid.major = element_line(color = "grey50")) +
-  theme(panel.grid.minor = element_line(color = "grey50"))#+ scale_color_gradient(low="blue", high="red")
-   #+ scale_color_gradientn(colours = rainbow(length(w))) +
-  
+    theme(panel.grid.major = element_line(color = "grey50")) +
+    theme(panel.grid.minor = element_line(color = "grey50"))#+ scale_color_gradient(low="blue", high="red")
+  #+ scale_color_gradientn(colours = rainbow(length(w))) +
+
 
   # data <- data.frame(x = unlist(y), y = unlist(total_wavg))
   # line <- lm(formula = y ~ x, data = data)
@@ -496,37 +509,37 @@ marginals_plot <- function(ans){
 
   # # # Plot
   p1 <- ggplot(data1,aes(x=theta,y=y)) +
-  geom_col(alpha = 0.3, width=0.0001, color="red", fill="red") +
-  geom_col(data=data2, alpha = 0.3, width=0.0001, color="lightblue", fill="lightblue") +
-  dark_theme_linedraw() +
-  geom_vline(xintercept=c(weighted.mean(original, rep(1/length(original), length(original))),weighted.mean(sol, w)),col=c("red","lightblue"), linetype=2)+
-  theme(panel.grid= element_line(color = "grey30")) +
-  ggtitle("Marginals - Liver Enzyme|Reference concentration") +
-  xlab("Liver Enzyme|Reference concentration") +
-  ylab("Weight") + coord_trans(x="log10")
+    geom_col(alpha = 0.3, width=0.0001, color="red", fill="red") +
+    geom_col(data=data2, alpha = 0.3, width=0.0001, color="lightblue", fill="lightblue") +
+    dark_theme_linedraw() +
+    geom_vline(xintercept=c(weighted.mean(original, rep(1/length(original), length(original))),weighted.mean(sol, w)),col=c("red","lightblue"), linetype=2)+
+    theme(panel.grid= element_line(color = "grey30")) +
+    ggtitle("Marginals - Liver Enzyme|Reference concentration") +
+    xlab("Liver Enzyme|Reference concentration") +
+    ylab("Weight") + coord_trans(x="log10")
 
   p2 <- ggplot(data2,aes(x=x,y=y)) +
 
-  geom_col(alpha = 0.5, width=0.1) +
-  dark_theme_linedraw() +
-  geom_vline(xintercept=c(1,weighted.mean(ans$theta[2, ], ans$w)),col=c("red","blue"))+
-  theme(panel.grid= element_line(color = "grey30")) +
-  ggtitle("Marginals - theta[2] (Scalefy)") +
-  xlab("theta[2] (Scalefy)") +
-  ylab("Weight")
+    geom_col(alpha = 0.5, width=0.1) +
+    dark_theme_linedraw() +
+    geom_vline(xintercept=c(1,weighted.mean(ans$theta[2, ], ans$w)),col=c("red","blue"))+
+    theme(panel.grid= element_line(color = "grey30")) +
+    ggtitle("Marginals - theta[2] (Scalefy)") +
+    xlab("theta[2] (Scalefy)") +
+    ylab("Weight")
 
   p3 <- ggplot(data3,aes(x=x,y=y)) +
 
-  geom_col(alpha = 0.5, width=0.1) +
-  dark_theme_linedraw() +
-  geom_vline(xintercept=c(1,weighted.mean(ans$theta[3, ], ans$w)),col=c("red","blue"))+
-  theme(panel.grid= element_line(color = "grey30")) +
-  ggtitle("Marginals - theta[3] (theta[3] (Liver Enzyme|Reference concentration))") +
-  xlab("theta[1] (theta[3] (Liver Enzyme|Reference concentration))") +
-  ylab("Weight")
+    geom_col(alpha = 0.5, width=0.1) +
+    dark_theme_linedraw() +
+    geom_vline(xintercept=c(1,weighted.mean(ans$theta[3, ], ans$w)),col=c("red","blue"))+
+    theme(panel.grid= element_line(color = "grey30")) +
+    ggtitle("Marginals - theta[3] (theta[3] (Liver Enzyme|Reference concentration))") +
+    xlab("theta[1] (theta[3] (Liver Enzyme|Reference concentration))") +
+    ylab("Weight")
 
 
-  gridExtra::grid.arrange(p1, p2, p3, ncol = 3) 
+  gridExtra::grid.arrange(p1, p2, p3, ncol = 3)
 }
 
 # P <- PSI_2(y, t, theta, sigma)
