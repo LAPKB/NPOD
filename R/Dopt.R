@@ -1,7 +1,7 @@
 Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma, a, b) {
   print("dopt")
   old_theta <- theta_0
-  count <<- 1
+  counter <<- 1
   F0 <- -10 ^ (30)
   F1 <- 2 * F0
 
@@ -12,13 +12,13 @@ Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma, a, b) {
   options <- neldermead::optimset(MaxFunEvals = 2000000000, TolX = 1e-14, MaxIter = 10, TolFun = 1e-14)
   #  old_F <-c()
   new_F <- c()
-  #  old_F[count] <- F1
-  new_F[count] <- F0
-  new_F[count + 1] <- F1
+  #  old_F[counter] <- F1
+  new_F[counter] <- F0
+  new_F[counter + 1] <- F1
   #while (abs(F1 - F0) > theta_F) {
-  while (abs(new_F[count + 1] - new_F[count]) > theta_F) {
+  while (abs(new_F[counter + 1] - new_F[counter]) > theta_F) {
 
-    #old_F[count] <-new_F[count] 
+    #old_F[counter] <-new_F[counter]
 
 
     P1 <- PSI_2(y, t, old_theta, sigma)
@@ -41,7 +41,7 @@ Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma, a, b) {
     ans2 <- burke(P2)
 
     #updating of F1
-    new_F[count + 2] <- ans2$fobj
+    new_F[counter + 2] <- ans2$fobj
     lam2 <- ans2$lambda
 
     ind2 <- (lam2 > (max(lam2) / 1000))
@@ -58,15 +58,15 @@ Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma, a, b) {
     print("END")
 
 
-    if (abs(new_F[count + 2] - new_F[count + 1]) <= theta_F) {
+    if (abs(new_F[counter + 2] - new_F[counter + 1]) <= theta_F) {
       break
     }
 
-    if(count>=ncycles){
+    if(counter>=ncycles){
       print("Maximum number of cycles reached")
       break
     }
-    #print(abs(new_F[count+2] - new_F[count+1]))
+    #print(abs(new_F[counter+2] - new_F[counter+1]))
     K <- length(new_theta[1,])
     pyl <- P2 %*% new_w
     #TODO: Ask Alona, the size of new_theta is increasing, 1:k is fixed, is not testing all supp points.
@@ -83,10 +83,10 @@ Dopt <- function(y, t, theta_0, theta_F, theta_d, sigma, a, b) {
 
     old_theta <- new_theta
 
-    count <- count + 1
+    counter <- counter + 1
     print("Counter: ")
-    print(count)
+    print(counter)
   }
 
-  return(list("count" = count, "theta" = new_theta, "w" = new_w, "LogLikelihood" = new_F[length(new_F)], "PSI" = P2))
+  return(list("count" = counter, "theta" = new_theta, "w" = new_w, "LogLikelihood" = new_F[length(new_F)], "PSI" = P2))
 }
