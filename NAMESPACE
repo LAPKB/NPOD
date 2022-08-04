@@ -2,4 +2,10 @@
 
 export(NPOD)
 export(correlation)
+export(covariance)
+export(get_population_functions)
+export(get_weighted_points)
+export(population_menu)
+export(posterior)
+export(readObservedDataFile)
 useDynLib(ipm_v2)
