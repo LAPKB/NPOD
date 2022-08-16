@@ -6,6 +6,6 @@
 # install.packages("DiceDesign")
 # install.packages("ospsuite")
 # install.packages("bigstatsr")
-# install.packages("rClr_0.8.3.zip", repos = NULL)
-# install.packages("ospsuite_9.1.4.zip", repos = NULL)
-#Install Visual C++: https://aka.ms/vs/16/release/vc_redist.x64.exe
+# install.packages("rClr_0.9.1.zip", repos = NULL)
+# install.packages("ospsuite_10.0.72.zip", repos = NULL)
+# Install Visual C++: https://aka.ms/vs/16/release/vc_redist.x64.exe

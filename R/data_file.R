@@ -1,3 +1,4 @@
+#' @export
 parse_data_file <- function(file_name, na = ".", ...) {
     if (!file.exists(file_name)) {
         stop("File not found: " + file_name)
@@ -11,23 +12,25 @@ parse_data_file <- function(file_name, na = ".", ...) {
     return(raw_data)
 }
 
+#' @export
 get_demographics <- function(parsed_data, sub = NA, occ = 1) {
     parsed_data %>%
         {
             if (!is.na(sub)) filter(., id == sub) else .
         } %>%
-        filter(occasion == occ) %>%
-        select(-c(time, out, occasion)) %>%
-        distinct() %>%
+        dplyr::filter(occasion == occ) %>%
+        dplyr::select(-c(time, out, occasion)) %>%
+        dplyr::distinct() %>%
         return()
 }
 
+#' @export
 get_concentrations <- function(parsed_data, occ = 1) {
     parsed_data %>%
         # filter(is.na(dose)) %>%
-        filter(occasion == occ) %>%
-        select(c(id, time, out)) %>%
-        mutate(out = replace(out, out == 999, NA)) %>%
-        group_by(time, id) %>%
-        spread(key = id, value = out)
+        dplyr::filter(occasion == occ) %>%
+        dplyr::select(c(id, time, out)) %>%
+        dplyr::mutate(out = replace(out, out == 999, NA)) %>%
+        dplyr::group_by(time, id) %>%
+        tidyr::spread(key = id, value = out)
 }

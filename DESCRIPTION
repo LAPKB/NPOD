@@ -13,8 +13,8 @@ License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
-Imports:    memoise,
+RoxygenNote: 7.2.1
+Imports: memoise,
             readr,
             ggplot2,
             tibble,
@@ -22,5 +22,5 @@ Imports:    memoise,
             neldermead,
             DiceDesign,
             readxl,
-            cachem
-
+            cachem,
+            dplyr
