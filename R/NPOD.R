@@ -84,7 +84,7 @@ NPOD <- function(sim_file, pkdata_file, params, individuals, population_function
   }
   min_y <- min(unlist(y_old))
   for (i in 1:number_of_individuals) {
-    sigma_old[[i]] <- (c0 * min_y + c1 * y_old[[i]] + c2)
+    sigma_old[[i]] <- (c0 * y_old[[i]] + c1 * y_old[[i]]^2 + c2*y_old[[i]]^3)
   }
 
   ind <- c(0)

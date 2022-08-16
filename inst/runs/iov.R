@@ -45,5 +45,5 @@ for (i in 1:number_of_occassions) {
     gsub("\"", "", .) %>%
     gsub("time", "Time", .) %>%
     writeLines(pkdata_file)
-  occasions[[i]] <- NPOD(sim_file, pkdata_file, params, individuals, population_functions, c0 = 0.05, c1 = 0.01)
+  occasions[[i]] <- NPOD(sim_file, pkdata_file, params, individuals, population_functions, c0 = 0.1, c1 = 0.05)
 }
