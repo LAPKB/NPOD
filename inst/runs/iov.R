@@ -35,7 +35,7 @@ for (i in 1:number_of_individuals) {
 parameter_paths <- c("Liver Enzyme|Reference concentration")
 population_functions <- get_population_functions(parameter_paths, number_of_individuals)
 
-occasions <- vector(mode = "list", length = number_of_individuals)
+occasions <- vector(mode = "list", length = number_of_occassions)
 
 
 for (i in 1:number_of_occassions) {
@@ -46,4 +46,10 @@ for (i in 1:number_of_occassions) {
     gsub("time", "Time", .) %>%
     writeLines(pkdata_file)
   occasions[[i]] <- NPOD(sim_file, pkdata_file, params, individuals, population_functions, c0 = 0.1, c1 = 0.05)
+}
+
+posteriors <- vector(mode = "list", length = number_of_occassions)
+
+for (i in 1:number_of_occassions) {
+  posteriors[[i]] <- occasions[[i]] %>% posterior()
 }
