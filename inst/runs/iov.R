@@ -45,11 +45,22 @@ for (i in 1:number_of_occassions) {
     gsub("\"", "", .) %>%
     gsub("time", "Time", .) %>%
     writeLines(pkdata_file)
-  occasions[[i]] <- NPOD(sim_file, pkdata_file, params, individuals, population_functions, c0 = 0.1, c1 = 0.05, cache_folder_name = "iov")
+  occasions[[i]] <- NPOD(sim_file,
+    pkdata_file, params, individuals, population_functions,
+    c0 = 0.05, c1 = 0.05, cache_folder_name = "iov", size_theta0 = 10000,
+  )
 }
+# saveRDS(occasions, "iov.rds")
+# occasions <- readRDS("iov.rds")
 
-posteriors <- vector(mode = "list", length = number_of_occassions)
+posterior <- vector(mode = "list", length = number_of_occassions)
 
 for (i in 1:number_of_occassions) {
-  posteriors[[i]] <- occasions[[i]] %>% posterior()
+  posterior[[i]] <- occasions[[i]] %>% posterior()
+}
+
+param_posteriors <- vector(mode = "list", length = number_of_occassions)
+
+for (i in 1:number_of_occassions) {
+  param_posteriors[[i]] <- posterior[[i]] %*% occasions[[i]]$theta
 }
