@@ -53,14 +53,14 @@ for (i in 1:number_of_occassions) {
 # saveRDS(occasions, "iov.rds")
 # occasions <- readRDS("iov.rds")
 
-posterior <- vector(mode = "list", length = number_of_occassions)
+posteriors <- vector(mode = "list", length = number_of_occassions)
 
 for (i in 1:number_of_occassions) {
-  posterior[[i]] <- occasions[[i]] %>% posterior()
+  posteriors[[i]] <- occasions[[i]] %>% posterior()
 }
 
 param_posteriors <- vector(mode = "list", length = number_of_occassions)
 
 for (i in 1:number_of_occassions) {
-  param_posteriors[[i]] <- posterior[[i]] %*% occasions[[i]]$theta
+  param_posteriors[[i]] <- posteriors[[i]] %*% c(occasions[[i]]$theta)
 }
